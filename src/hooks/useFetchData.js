@@ -15,7 +15,7 @@ const useFetchData = () => {
         const getData = async () => {
             setLoading(true)
 
-            await axios.get(url, {
+            await axios.patch(url, {
                 headers: {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Headers": "Content-Type, x-access-token",
