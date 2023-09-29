@@ -231,11 +231,11 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
     },
     radar: {
       indicator: [
-        { name: 'co2e', color: '#000' },
-        { name: 'ch4', color: '#000' },
-        { name: 'c02', color: '#000' },
-        { name: 'n2o', color: '#000' },
-        { name: 'co2e_other', color: '#000' }
+        { name: 'co2e', max: 550, color: '#000' },
+        { name: 'ch4', max: 550, color: '#000' },
+        { name: 'co2', max: 550, color: '#000' },
+        { name: 'co2e_other', max: 550, color: '#000' },
+        { name: 'n2o', max: 550, color: '#000' },
       ]
     },
     series: [
@@ -244,7 +244,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         type: 'radar',
         data: [
           {
-            value: [4200, 3000, 20000, 35000, 0],
+            value: [200.92, 150.29, 550.31, 250.32, 450.00],
             name: 'Constituent Gases'
           }
         ]
@@ -384,15 +384,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
               <p className='font-medium'>Scope 4 emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[50px_1fr] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
+                <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]'>
+                  
                   <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
                     <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
                     <div className='w-full grid grid-cols-2'>
@@ -404,6 +397,14 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                         <p className='text-slate-500'>Emission</p>
                         <p className='text-base font-semibold'>100 kg</p>
                       </div>
+                    </div>
+                  </div>
+                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
+                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
+                      <BiSolidEditAlt size={20} className='fill-green-500'/>
+                    </div>
+                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
+                      <FaTrashAlt size={16} className='fill-red-400'/>
                     </div>
                   </div>
                 </div>
@@ -533,23 +534,23 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               <div className='h-fit w-full flex flex-col'>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2e</p>
-                  <p className='font-semibold'>1000kg</p>
+                  <p className='font-semibold'>200.92kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>ch4</p>
-                  <p className='font-semibold'>1000kg</p>
+                  <p className='font-semibold'>150.29kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2</p>
-                  <p className='font-semibold'>1000kg</p>
+                  <p className='font-semibold'>550.31kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>n2o</p>
-                  <p className='font-semibold'>1000kg</p>
+                  <p className='font-semibold'>450.00kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2e_other</p>
-                  <p className='font-semibold'>1000kg</p>
+                  <p className='font-semibold'>250.32kg</p>
                 </div>
               </div>
             </div>
