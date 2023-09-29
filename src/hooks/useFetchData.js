@@ -5,6 +5,7 @@ import { host } from './host'
 const useFetchData = () => {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState([])
+    const [chartSector, setChartSector] = useState([])
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source()
@@ -29,8 +30,13 @@ const useFetchData = () => {
             })
             .then((response) => {
                 const obj = response.data
+                console.log(obj);
                 if (obj) {
+                    let temp = Object.entries(obj?.by_type)?.filter(f => f[1] > 0)
                     setData(obj)
+                    if (temp && temp.length > 0) {
+                        setChartSector(temp.map(e => { return { name: e[0], value: Number(Number(e[1]).toFixed(3)) } }))
+                    }
                 }
             })
             .catch((err) => {
@@ -46,7 +52,7 @@ const useFetchData = () => {
         }
     }, [])
 
-    return [loading, data]
+    return [loading, data, chartSector]
 }
 
 export default useFetchData

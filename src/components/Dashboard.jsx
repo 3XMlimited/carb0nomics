@@ -19,7 +19,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   const [displayForm, setDisplayForm] = useState(false)
   
   const fetch = useFetchData()
-  const [loading, data] = fetch
+  const [loading, data, chartSector] = fetch
 
   useEffect(() => {
     setCurrentRoute('dashboard')
@@ -66,12 +66,19 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
     },
     legend: {
       top: '0',
-      left: 'center'
+      left: 'center',
+      width: '90%',
+      textStyle: {
+        fontSize: 10,
+        width: 50,
+        ellipsis: '...',
+        overflow: 'truncate'
+      }
     },
     xAxis: [
       {
         type: 'category',
-        data: ['Mon', 'Tue', 'Wed','Mon', 'Tue', 'Wed', 'Mon', 'Tue', 'Wed', 'Mon', 'Tue', 'Wed']
+        data: data.by_date ? data.by_date.map(e => e.date) : []
       }
     ],
     yAxis: [
@@ -79,98 +86,20 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         type: 'value'
       }
     ],
-    series: [
-      {
-        name: 'Insurance & Financial Services',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [620, 732, 701, 620, 732, 701, 620, 732, 701, 620, 732, 701, ]
-      },
-      {
-        name: 'Energy',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [120, 132, 101, 620, 732, 701, 620, 732, 701, 620, 732, 701, ]
-      },
-      {
-        name: 'Transport',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [60, 72, 71, 620, 732, 701, 620, 732, 701, 620, 732, 701, ]
-      },
-      {
-        name: 'Buildings & Infrastructure',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [62, 82, 91, 620, 732, 701, 620, 732, 701, 620, 732, 701, ]
-      },
-      {
-        name: 'Consumer Goods & Services',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [620, 732, 701,620, 732, 701, 620, 732, 701, 620, 732, 701,  ]
-      },
-      {
-        name: 'Education',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [120, 132, 101,620, 732, 701, 620, 732, 701, 620, 732, 701,  ]
-      },
-      {
-        name: 'Health & Social Care',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [60, 72, 71,620, 732, 701, 620, 732, 701, 620, 732, 701,  ]
-      },
-      {
-        name: 'Restaurants & Accommodations',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [62, 82, 91,620, 732, 701, 620, 732, 701, 620, 732, 701,  ]
-      },
-      {
-        name: 'Waste',
-        type: 'bar',
-        barMaxWidth: 100,
-        stack: 'Sector',
-        emphasis: {
-          focus: 'series'
-        },
-        data: [60, 72, 71,620, 732, 701, 620, 732, 701, 620, 732, 701,  ]
-      },
-    ]
+    series: (data.by_date && data.by_date.length > 0) ? (
+      Object.keys(data.by_date[0]).filter(f => f !== 'date').map(e => {
+        return {
+          name: e,
+          type: 'bar',
+          barMaxWidth: 100,
+          stack: 'Sector',
+          emphasis: {
+            focus: 'series'
+          },
+          data: data.by_date.map(m => m[e])
+        }
+      })
+    ) : []
   };
 
   const emissionsPieChartOption = {
@@ -191,17 +120,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         name: 'Emissions By',
         type: 'pie',
         radius: ['40%', '60%'],
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' },
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 10, name: 'Union Ads' },
-        ],
+        data: (chartSector.length > 0) ? chartSector : [],
         emphasis: {
           itemStyle: {
             shadowBlur: 5,
@@ -234,7 +153,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         { name: 'co2e', max: 550, color: '#000' },
         { name: 'ch4', max: 550, color: '#000' },
         { name: 'co2', max: 550, color: '#000' },
-        { name: 'co2e_other', max: 550, color: '#000' },
+        { name: 'co2_other', max: 550, color: '#000' },
         { name: 'n2o', max: 550, color: '#000' },
       ]
     },
@@ -244,7 +163,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         type: 'radar',
         data: [
           {
-            value: [200.92, 150.29, 550.31, 250.32, 450.00],
+            value: data.by_gases ? [data.by_gases.co2e, data.by_gases.ch4, data.by_gases.co2, data.by_gases.co2_other, data.by_gases.n2o] : [],
             name: 'Constituent Gases'
           }
         ]
@@ -322,43 +241,19 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
           <div className='h-fit w-full grid grid-cols-[300px_1fr] gap-[20px]'>
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
               <p className='font-medium'>Emissions by Sectors</p>
-              <div className='flex-1 h-full w-full grid grid-rows-9 gap-[10px]'>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Insurance & Financial Services</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Energy</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Transport</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Buildings & Infrastructure</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Consumer Goods & Services</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Education</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Health & Social Care</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Restaurants & Accommodations</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
-                <div className='h-full w-full flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Waste</p>
-                  <p className='font-semibold'>1000kg</p>
-                </div>
+              <div className='h-fit w-full grid grid-flow-row gap-[10px]'>
+                {(chartSector.length > 0) ? (
+                  chartSector.map((e, i) => (
+                    <div className='h-full w-full flex items-center justify-between py-[10px] text-sm border-b border-b-slate-300 gap-[5px]' key={i}>
+                      <p className='text-slate-500'>{e.name}</p>
+                      <p className='font-semibold'>{e.value}kg</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className='h-full w-full flex items-center justify-between text-sm gap-[5px]'>
+                    <p className='text-slate-500'>No Data yet</p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -534,29 +429,59 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               <div className='h-fit w-full flex flex-col'>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2e</p>
-                  <p className='font-semibold'>{data?.by_gases?.co2e ? data.by_gases.co2e : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2e ? (data.by_gases.co2e*1).toFixed(3) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>ch4</p>
-                  <p className='font-semibold'>{data?.by_gases?.ch4 ? data.by_gases.ch4 : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.ch4 ? (data.by_gases.ch4*1).toFixed(3) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2</p>
-                  <p className='font-semibold'>{data?.by_gases?.co2 ? data.by_gases.co2 : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2 ? (data.by_gases.co2*1).toFixed(3) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>n2o</p>
-                  <p className='font-semibold'>{data?.by_gases?.n2o ? data.by_gases.n2o : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.n2o ? (data.by_gases.n2o*1).toFixed(3) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>co2e_other</p>
-                  <p className='font-semibold'>{data?.by_gases?.co2e_other ? data.by_gases.co2e_other : '0'}kg</p>
+                  <p className='text-slate-500'>co2_other</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2_other ? (data.by_gases.co2_other*1).toFixed(3) : '0'}kg</p>
                 </div>
-                <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
-                  <p className='text-slate-500'>Total</p>
-                  {/* <p className='font-semibold'>{data.by_gases.co2e_total}kg</p> */}
-                  <p className='font-semibold'>{data?.by_gases?.co2e_total ? data.by_gases.co2e_total : '0'}kg</p>
-                </div>
+              </div>
+            </div>
+          </div>
+          {/* second bar chart */}
+          <div className='h-fit w-full grid gap-[20px]'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
+              <p className='font-medium'>Scope 4 emissions by each</p>
+              <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
+                {data.data ? (
+                  data.data.map((e, i) => (
+                    <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]'>
+                      <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
+                        <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
+                        <div className='w-full grid grid-cols-2'>
+                          <div className='h-fit w-full flex flex-col'>
+                            <p className='text-slate-500'>Category</p>
+                            <p className='text-base font-semibold'>1000 KWH</p>
+                          </div>
+                          <div className='h-fit w-full flex flex-col'>
+                            <p className='text-slate-500'>Emission</p>
+                            <p className='text-base font-semibold'>100 kg</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
+                          <BiSolidEditAlt size={20} className='fill-green-500'/>
+                        </div>
+                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
+                          <FaTrashAlt size={16} className='fill-red-400'/>
+                        </div>
+                      </div>
+                    </div> 
+                  ))
+                ) : (<></>)}
               </div>
             </div>
           </div>

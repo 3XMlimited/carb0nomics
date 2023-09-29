@@ -1,1 +1,1 @@
-export const host = 'http://16.163.97.144'
+export const host = 'https://carb0nomics.com'
