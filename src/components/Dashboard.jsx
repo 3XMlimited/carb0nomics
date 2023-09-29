@@ -380,6 +380,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                 <ReactEChart option={emissionsPieChartOption} style={{height: '100%', width: '100%'}}/>
               </div>
             </div>
+            
 
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
               <p className='font-medium'>Scope 4 emissions by each</p>
