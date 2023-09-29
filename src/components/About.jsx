@@ -22,7 +22,7 @@ const About = ({ setCurrentRoute, loginStatus }) => {
       {/* hero */}
       <div className='h-fit w-full flex justify-center bg-slate-100'>
         <div className='h-fit min-h-[200px] w-full max-w-[1024px] px-[20px] py-[40px] flex flex-col items-center gap-[40px]'>
-          <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Carb0nomics walks towards to a carbon neutral future</p>
+          <p className='text-4xl font-bold text-center xxl:text-3xl sm:text-2xl'>Carb0nomics walks towards to a carbon neutral future</p>
           <img src={about} alt="logo" className='h-[300px] w-full max-w-[600px] object-cover' />
         </div>
       </div>
