@@ -1,0 +1,1 @@
+export const host = 'http://16.163.97.144'
