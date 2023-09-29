@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { host } from './host'
 
-const useFetchData = () => {
+const useFetchData = ({ refresh }) => {
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState([])
     const [chartSector, setChartSector] = useState([])
@@ -30,7 +30,6 @@ const useFetchData = () => {
             })
             .then((response) => {
                 const obj = response.data
-                console.log(obj);
                 if (obj) {
                     let temp = Object.entries(obj?.by_type)?.filter(f => f[1] > 0)
                     setData(obj)
@@ -50,7 +49,7 @@ const useFetchData = () => {
         return () => {
             cancelToken.cancel()
         }
-    }, [])
+    }, [refresh])
 
     return [loading, data, chartSector]
 }

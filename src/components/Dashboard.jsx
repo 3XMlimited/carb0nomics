@@ -7,7 +7,7 @@ import { BiSolidEditAlt } from 'react-icons/bi'
 import { ImCancelCircle } from 'react-icons/im'
 
 import { categories, unit_types } from '../local'
-import { addDataAPI } from '../hooks/functions'
+import { addDataAPI, deleteDataAPI, updateDataAPI } from '../hooks/functions'
 import useFetchData from '../hooks/useFetchData'
 
 const Dashboard = ({ setCurrentRoute, loginStatus }) => {
@@ -17,8 +17,11 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   const [error, setError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [displayForm, setDisplayForm] = useState(false)
+  const [displayFormEdit, setDisplayFormEdit] = useState(false)
+  const [refresh, setRefresh] = useState(false)
+  const [userID, setUserID] = useState('')
   
-  const fetch = useFetchData()
+  const fetch = useFetchData({ refresh })
   const [loading, data, chartSector] = fetch
 
   useEffect(() => {
@@ -33,8 +36,6 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
   useEffect(() => {
     let finding = categories.find(f => f.sector === formDetails.sector)
-    setFormOptions(p => {return{...p, category: [], unit: []}})
-    setFormDetails(p => {return{...p, category: '', active_id: '', type: '', amount: 0, unit: ''}})
     if (finding) {
       setFormOptions(p => {return{...p, category: finding.categories.map(e => e.category)}})
     }
@@ -42,8 +43,6 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
   useEffect(() => {
     let finding = categories.find(f => f.sector === formDetails.sector)
-    setFormOptions(p => {return{...p, unit: []}})
-    setFormDetails(p => {return{...p, active_id: '', type: '', amount: 0, unit: ''}})
     if (finding) {
       let tempUnit = finding?.categories?.find(f => f.category === formDetails.category)
       let tempFinal = unit_types.find(f => f.unit_type === tempUnit?.unit)?.units[`${tempUnit.unit.toLowerCase()}_unit`]
@@ -177,7 +176,17 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       setError('Please fill up the whole form. Amount should be more than 0.')
     } else {
       setError('')
-      addDataAPI({ formDetails, setFormLoading, setError })
+      addDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh })
+    }
+  }
+
+  // form submit
+  const handleEdit = () => {
+    if (formDetails.date === '' || formDetails.sector === '' || formDetails.active_id === '' || formDetails.category === '' || formDetails.amount <= 0 || formDetails.unit === '' || formDetails.type === '') {
+      setError('Please fill up the whole form. Amount should be more than 0.')
+    } else {
+      setError('')
+      updateDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID })
     }
   }
 
@@ -228,8 +237,53 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         </div>
       </div>
 
+      {/* form edit */}
+      <div className={`fixed z-50 top-0 ${displayFormEdit ? 'h-full w-full scale-100 opacity-100' : 'h-0 w-0 scale-0 opacity-0'} min-h-fit duration-500 bg-white/80 backdrop-blur-sm grid items-center overflow-y-scroll hide-scrollbar`}>
+        <div className='h-fit w-full p-[20px] flex justify-center'>
+          <div className='h-fit w-full max-w-[400px] bg-white p-[20px] flex flex-col gap-[5px] rounded-xl border border-slate-300 shadow-md'>
+            <div className='h-fit w-full flex justify-between'>
+              <p className='font-medium'>Estimation</p>
+              <ImCancelCircle size={24} className='fill-red-400 cursor-pointer hover:opacity-50' onClick={() => setDisplayFormEdit(false)}/>
+            </div>
+            <p className='text-sm text-slate-500'>Calculate total estimated emissions produced for a particular activity, in kgCO2e, using the available emission factors.</p>
+            {(error === '') ? <></> : (<p className='text-sm text-red-400'>{error}</p>)}
+            <p className='text-slate-500'>Sector:</p>
+            <select value={formDetails.sector} onChange={e => setFormDetails(p => {return{...p, sector: e.target.value}})} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+              <option value=''>Choose...</option>
+              {formOptions.sector.map((e, i) => (
+                <option key={i} value={e}>{e}</option>
+              ))}
+            </select>
+            <p className='text-slate-500'>Category:</p>
+            <select value={formDetails.category} onChange={e => setFormDetails(p => {return{...p, category: e.target.value}})} disabled={(formDetails.sector === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+              <option value=''>Choose...</option>
+              {formOptions.category.map((e, i) => (
+                <option key={i} value={e}>{e}</option>
+              ))}
+            </select>
+            <p className='text-slate-500'>Amount:</p>
+            <div className='h-fit w-full grid grid-cols-[1fr_100px] gap-[10px] sm:grid-cols-[1fr_80px]'>
+              <input value={formDetails.amount} onChange={e => setFormDetails(p => {return{...p, amount: e.target.value}})} disabled={(formDetails.category === '') ? true : false} type='number' placeholder='1000' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+              <select value={formDetails.unit} onChange={e => setFormDetails(p => {return{...p, unit: e.target.value}})} disabled={(formDetails.category === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+                <option value=''>Choose...</option>
+                {formOptions.unit.map((e, i) => (
+                  <option key={i} value={e}>{e}</option>
+                ))}
+              </select>
+            </div>
+            <p className='text-slate-500'>Date:</p>
+            <input value={formDetails.date} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM-DD')}})} type='date' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+            <button onClick={() => handleEdit()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
+              {formLoading ? (
+                <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
+              ) : 'EDIT'}
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* dashboard */}
-      <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-100 flex justify-center'>
+      <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-200 flex justify-center'>
         <div className='h-fit w-full max-w-[1700px] p-[20px] flex flex-col gap-[20px]'>
           {/* top */}
           <div className='h-fit w-full flex items-center justify-between gap-[10px]'>
@@ -238,8 +292,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
           </div>
 
           {/* first bar chart */}
-          <div className='h-fit w-full grid grid-cols-[300px_1fr] gap-[20px]'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+          <div className='h-fit w-full grid grid-cols-[300px_1fr] gap-[20px] xxl:grid-cols-1'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl xxl:h-fit'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-fit w-full grid grid-flow-row gap-[10px]'>
                 {(chartSector.length > 0) ? (
@@ -268,7 +322,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
           </div>
 
           {/* second bar chart */}
-          <div className='h-fit w-full grid grid-cols-[400px_1fr_400px] gap-[20px]'>
+          <div className='h-fit w-full grid grid-cols-[400px_1fr_400px] gap-[20px] xxxl:grid-cols-2 lg:grid-cols-1'>
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-[500px] w-full'>
@@ -276,148 +330,44 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </div>
             </div>
 
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
-              <p className='font-medium'>Scope 4 emissions by each</p>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar xxxl:hidden'>
+              <p className='font-medium'>Scope emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  
-                  <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                    <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
-                    <div className='w-full grid grid-cols-2'>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Category</p>
-                        <p className='text-base font-semibold'>1000 KWH</p>
+                {data.data ? (
+                  data.data.map((e, i) => (
+                    <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]' key={i}>
+                      <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
+                        <p className='text-base'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span></p>
+                        <div className='w-full grid grid-cols-2'>
+                          <div className='h-fit w-full flex flex-col'>
+                            <p className='text-slate-500'>Category</p>
+                            <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(3)} {e.activity_data.activity_unit}</p>
+                          </div>
+                          <div className='h-fit w-full flex flex-col'>
+                            <p className='text-slate-500'>Emission</p>
+                            <p className='text-base font-semibold'>{Number(e.co2e).toFixed(3)} {e.co2e_unit}</p>
+                          </div>
+                        </div>
                       </div>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Emission</p>
-                        <p className='text-base font-semibold'>100 kg</p>
+                      <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: e.date, sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
+                          {formLoading ? (
+                            <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
+                          ) : (
+                            <BiSolidEditAlt size={20} className='fill-green-500'/>
+                          )}
+                        </div>
+                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50' onClick={() => deleteDataAPI({ setFormLoading, setRefresh, id: e.id })}>
+                          {formLoading ? (
+                            <div className='h-[30px] w-[30px] rounded-full border-[5px] border-red-100 border-t-[5px] border-t-white animate-spin'/>
+                          ) : (
+                            <FaTrashAlt size={16} className='fill-red-400'/>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
-                </div>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[50px_1fr] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
-                  <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                    <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
-                    <div className='w-full grid grid-cols-2'>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Category</p>
-                        <p className='text-base font-semibold'>1000 KWH</p>
-                      </div>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Emission</p>
-                        <p className='text-base font-semibold'>100 kg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[50px_1fr] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
-                  <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                    <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
-                    <div className='w-full grid grid-cols-2'>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Category</p>
-                        <p className='text-base font-semibold'>1000 KWH</p>
-                      </div>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Emission</p>
-                        <p className='text-base font-semibold'>100 kg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[50px_1fr] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
-                  <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                    <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
-                    <div className='w-full grid grid-cols-2'>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Category</p>
-                        <p className='text-base font-semibold'>1000 KWH</p>
-                      </div>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Emission</p>
-                        <p className='text-base font-semibold'>100 kg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[50px_1fr] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
-                  <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                    <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
-                    <div className='w-full grid grid-cols-2'>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Category</p>
-                        <p className='text-base font-semibold'>1000 KWH</p>
-                      </div>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Emission</p>
-                        <p className='text-base font-semibold'>100 kg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='h-fit w-full p-[10px] grid grid-cols-[50px_1fr] text-sm border border-slate-200 rounded-lg gap-[10px]'>
-                  <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                    <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                      <BiSolidEditAlt size={20} className='fill-green-500'/>
-                    </div>
-                    <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                      <FaTrashAlt size={16} className='fill-red-400'/>
-                    </div>
-                  </div>
-                  <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                    <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
-                    <div className='w-full grid grid-cols-2'>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Category</p>
-                        <p className='text-base font-semibold'>1000 KWH</p>
-                      </div>
-                      <div className='h-fit w-full flex flex-col'>
-                        <p className='text-slate-500'>Emission</p>
-                        <p className='text-base font-semibold'>100 kg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    </div> 
+                  ))
+                ) : (<></>)}
               </div>
             </div>
 
@@ -450,33 +400,42 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </div>
             </div>
           </div>
-          {/* second bar chart */}
-          <div className='h-fit w-full grid gap-[20px]'>
+
+          {/* after max width chart */}
+          <div className='h-fit w-full hidden gap-[20px] xxxl:grid'>
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
-              <p className='font-medium'>Scope 4 emissions by each</p>
+              <p className='font-medium'>Scope emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
                 {data.data ? (
                   data.data.map((e, i) => (
-                    <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]'>
+                    <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]' key={i}>
                       <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                        <p className='text-base'>Electricity <span className='text-sm text-slate-500'>"Energy"</span></p>
+                        <p className='text-base'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span></p>
                         <div className='w-full grid grid-cols-2'>
                           <div className='h-fit w-full flex flex-col'>
                             <p className='text-slate-500'>Category</p>
-                            <p className='text-base font-semibold'>1000 KWH</p>
+                            <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(3)} {e.activity_data.activity_unit}</p>
                           </div>
                           <div className='h-fit w-full flex flex-col'>
                             <p className='text-slate-500'>Emission</p>
-                            <p className='text-base font-semibold'>100 kg</p>
+                            <p className='text-base font-semibold'>{Number(e.co2e).toFixed(3)} {e.co2e_unit}</p>
                           </div>
                         </div>
                       </div>
                       <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50'>
-                          <BiSolidEditAlt size={20} className='fill-green-500'/>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: e.date, sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
+                          {formLoading ? (
+                            <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
+                          ) : (
+                            <BiSolidEditAlt size={20} className='fill-green-500'/>
+                          )}
                         </div>
-                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50'>
-                          <FaTrashAlt size={16} className='fill-red-400'/>
+                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50' onClick={() => deleteDataAPI({ setFormLoading, setRefresh, id: e.id })}>
+                          {formLoading ? (
+                            <div className='h-[30px] w-[30px] rounded-full border-[5px] border-red-100 border-t-[5px] border-t-white animate-spin'/>
+                          ) : (
+                            <FaTrashAlt size={16} className='fill-red-400'/>
+                          )}
                         </div>
                       </div>
                     </div> 

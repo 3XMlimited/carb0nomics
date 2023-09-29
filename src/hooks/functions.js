@@ -1,6 +1,8 @@
 import axios from "axios";
-import { host } from "./host";
 import { v4 as uuidv4 } from 'uuid';
+import moment from "moment";
+import { host } from "./host";
+import { top30 } from "../local";
 
 export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, setLoginStatus }) => {
     setLoading(true);
@@ -153,13 +155,11 @@ export const changePasswordAPI = ({ setLoading, setError, details, setDetails, s
     })
 };
 
-export const addDataAPI = ({ formDetails, setFormLoading, setError }) => {
+export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const token = window.localStorage.getItem('token')
     const user = window.localStorage.getItem('user')
-    console.log({ ...formDetails, amount: Number(formDetails.amount), id: uuidv4() });
-    console.log(JSON.parse(user)._id);
 
     axios.post(url, {
         headers: {
@@ -173,10 +173,12 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError }) => {
     })
     .then((response) => {
         const obj = response.data;
-        console.log(response);
-        // if (obj.success) {
-        // } else {
-        // }
+        if (obj?.result?.emissions) {
+            setFormDetails({ date: moment().format('YYYY-MM-DD'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setRefresh(p => !p)
+        } else {
+            setError('Error! Please try again')
+        }
     })
     .catch((err) => {
         console.log(err);
@@ -185,3 +187,165 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError }) => {
         setFormLoading(false)
     })
 };
+
+export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
+    setFormLoading(true)
+    const url = `${host}/api/v1/data`;
+    const token = window.localStorage.getItem('token')
+    const user = window.localStorage.getItem('user')
+
+    axios.delete(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+token,
+        },
+        data: {
+            user_id: JSON.parse(user)._id,
+            id: id
+        }
+    })
+    .then((response) => {
+        setRefresh(p => !p)
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    .finally(() => {
+        setFormLoading(false)
+    })
+};
+
+export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID }) => {
+    setFormLoading(true)
+    const url = `${host}/api/v1/data`;
+    const token = window.localStorage.getItem('token')
+    const user = window.localStorage.getItem('user')
+
+    axios.delete(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+token,
+        },
+        data: {
+            user_id: JSON.parse(user)._id,
+            id: userID
+        }
+    })
+    .then((response) => {
+        addDataAPIForEdit({ formDetails, setFormLoading, setError, setFormDetails, setRefresh })
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    .finally(() => {
+        setFormLoading(false)
+    })
+};
+
+const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh }) => {
+    setFormLoading(true)
+    const url = `${host}/api/v1/data`;
+    const token = window.localStorage.getItem('token')
+    const user = window.localStorage.getItem('user')
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+token,
+        },
+        data: { ...formDetails, amount: Number(formDetails.amount), id: uuidv4() },
+        user_id: JSON.parse(user)._id
+    })
+    .then((response) => {
+        const obj = response.data;
+        if (obj?.result?.emissions) {
+            setFormDetails({ date: moment().format('YYYY-MM-DD'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setRefresh(p => !p)
+        } else {
+            setError('Error! Please try again')
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    .finally(() => {
+        setFormLoading(false)
+    })
+};
+
+export const esgDataAPI = ({ setLoading, setData, symbol }) => {
+    setLoading(true)
+    const url = `${host}/api/v1/data/esgChart`;
+    const token = window.localStorage.getItem('token')
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+token,
+        },
+        symbol: symbol
+    })
+    .then((response) => {
+        const obj = response.data
+        if (obj.data) {
+            setData(obj.data)
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    .finally(() => {
+        setLoading(false)
+    })
+};
+
+export const esgListDataAPI = ({ setLoading, setListData }) => {
+    setLoading(true)
+    let top = top30.map(e => { return { company: e.company, symbol: e.symbol } })
+    let result = []
+    const url = `${host}/api/v1/data/esgChart`;
+    const token = window.localStorage.getItem('token')
+
+    top.forEach(e => {
+        axios.post(url, {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+                "Authorization": "Bearer "+token,
+            },
+            symbol: e.symbol
+        })
+        .then((response) => {
+            const obj = response.data
+            if (obj.data) {
+                result.push({
+                    company: e.company,
+                    symbol: e.symbol,
+                    esg: obj.data[obj.data.length-1].esg,
+                    environment: obj.data[obj.data.length-1].environment,
+                    social: obj.data[obj.data.length-1].social,
+                    governance: obj.data[obj.data.length-1].governance,
+                })
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+        .finally(() => {
+            setLoading(false)
+        })
+    });
+
+    setListData(result)
+    setLoading(false)
+};
+

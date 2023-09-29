@@ -8,8 +8,11 @@ module.exports = {
       'mobile': {'raw': '(max-height: 520px),(max-width:520px)'},
       // => custom checking height and width
 
+      'xxxl': {'max': '1300px'},
+      // => @media (max-width: 1300px) { ... }
+
       'xxl': {'max': '920px'},
-      // => @media (max-width: 1440px) { ... }
+      // => @media (max-width: 920px) { ... }
 
       'xl': {'max': '820px'},
       // => @media (max-width: 700px) { ... }
