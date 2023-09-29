@@ -380,7 +380,6 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                 <ReactEChart option={emissionsPieChartOption} style={{height: '100%', width: '100%'}}/>
               </div>
             </div>
-            
 
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
               <p className='font-medium'>Scope 4 emissions by each</p>
@@ -535,23 +534,28 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               <div className='h-fit w-full flex flex-col'>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2e</p>
-                  <p className='font-semibold'>200.92kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2e ? data.by_gases.co2e : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>ch4</p>
-                  <p className='font-semibold'>150.29kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.ch4 ? data.by_gases.ch4 : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2</p>
-                  <p className='font-semibold'>550.31kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2 ? data.by_gases.co2 : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>n2o</p>
-                  <p className='font-semibold'>450.00kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.n2o ? data.by_gases.n2o : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2e_other</p>
-                  <p className='font-semibold'>250.32kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2e_other ? data.by_gases.co2e_other : '0'}kg</p>
+                </div>
+                <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
+                  <p className='text-slate-500'>Total</p>
+                  {/* <p className='font-semibold'>{data.by_gases.co2e_total}kg</p> */}
+                  <p className='font-semibold'>{data?.by_gases?.co2e_total ? data.by_gases.co2e_total : '0'}kg</p>
                 </div>
               </div>
             </div>

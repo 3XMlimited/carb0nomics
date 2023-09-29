@@ -29,9 +29,8 @@ const useFetchData = () => {
             })
             .then((response) => {
                 const obj = response.data
-                console.log(obj);
-                if (obj.result) {
-                    setData(obj.result)
+                if (obj) {
+                    setData(obj)
                 }
             })
             .catch((err) => {
