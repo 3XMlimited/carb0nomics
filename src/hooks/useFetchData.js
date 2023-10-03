@@ -4,7 +4,7 @@ import { host } from './host'
 
 const useFetchData = ({ refresh }) => {
     const [loading, setLoading] = useState(true)
-    const [data, setData] = useState([])
+    const [data, setData] = useState({})
     const [chartSector, setChartSector] = useState([])
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const useFetchData = ({ refresh }) => {
                     let temp = Object.entries(obj?.by_type)?.filter(f => f[1] > 0)
                     setData(obj)
                     if (temp && temp.length > 0) {
-                        setChartSector(temp.map(e => { return { name: e[0], value: Number(Number(e[1]).toFixed(3)) } }))
+                        setChartSector(temp.map(e => { return { name: e[0], value: Number(Number(e[1]).toFixed(0)) } }))
                     }
                 }
             })

@@ -11,8 +11,9 @@ import Home from './components/Home'
 import About from './components/About'
 import Contact from './components/Contact'
 import Policy from './components/Policy'
-import Pricing from './components/Pricing'
+// import Pricing from './components/Pricing'
 import Dashboard from './components/Dashboard'
+import ActionPlan from './components/ActionPlan'
 import Search from './components/Search'
 import Account from './components/Account'
 import Navbar from './components/Navbar';
@@ -71,11 +72,12 @@ function App() {
         <Route exact path='/about' element={<About setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
         <Route exact path='/contact' element={<Contact setCurrentRoute={setCurrentRoute}/>}/>
         <Route exact path='/policy' element={<Policy setCurrentRoute={setCurrentRoute}/>}/>
-        <Route exact path='/pricing' element={<Pricing setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
+        {/* <Route exact path='/pricing' element={<Pricing setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/> */}
         <Route exact path='/login' element={<Login setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
         <Route exact path='/signup' element={<Signup setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
         <Route exact path='/forgotpassword' element={<ForgotPassword setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
         <Route exact path='/dashboard' element={<Dashboard setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
+        <Route exact path='/actionplan' element={<ActionPlan setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
         <Route exact path='/search' element={<Search setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
         <Route exact path='/account' element={<Account setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
       </Routes>

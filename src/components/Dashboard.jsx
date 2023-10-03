@@ -12,7 +12,7 @@ import useFetchData from '../hooks/useFetchData'
 
 const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   const navigate = useNavigate()
-  const [formDetails, setFormDetails] = useState({ date: moment().format('YYYY-MM-DD'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+  const [formDetails, setFormDetails] = useState({ date: moment().format('YYYY-MM'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
   const [formOptions, setFormOptions] = useState({ sector: categories.map(e => e.sector), category: [], unit: [] })
   const [error, setError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
@@ -95,7 +95,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
           emphasis: {
             focus: 'series'
           },
-          data: data.by_date.map(m => m[e])
+          data: data.by_date.map(m => Number(m[e]).toFixed(0))
         }
       })
     ) : []
@@ -149,11 +149,11 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
     },
     radar: {
       indicator: [
-        { name: 'co2e', max: 550, color: '#000' },
-        { name: 'ch4', max: 550, color: '#000' },
-        { name: 'co2', max: 550, color: '#000' },
-        { name: 'co2_other', max: 550, color: '#000' },
-        { name: 'n2o', max: 550, color: '#000' },
+        // { name: 'co2e', max: data.by_gases ? Object.values(data.by_gases).sort((a, b) => b-a)[0] : 1000, color: '#000' },
+        { name: 'ch4', max: data.by_gases ? Object.values(data.by_gases).sort((a, b) => b-a)[0] : 1000, color: '#000' },
+        { name: 'co2', max: data.by_gases ? Object.values(data.by_gases).sort((a, b) => b-a)[0] : 1000, color: '#000' },
+        { name: 'co2_other', max: data.by_gases ? Object.values(data.by_gases).sort((a, b) => b-a)[0] : 1000, color: '#000' },
+        { name: 'n2o', max: data.by_gases ? Object.values(data.by_gases).sort((a, b) => b-a)[0] : 1000, color: '#000' },
       ]
     },
     series: [
@@ -162,7 +162,13 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         type: 'radar',
         data: [
           {
-            value: data.by_gases ? [data.by_gases.co2e, data.by_gases.ch4, data.by_gases.co2, data.by_gases.co2_other, data.by_gases.n2o] : [],
+            value: data.by_gases ? [
+              // Number(data.by_gases.co2e_total).toFixed((data.by_gases.co2e_total < 1) ? 2 : 0),
+              Number(data.by_gases.ch4).toFixed((data.by_gases.ch4 < 1) ? 2 : 0),
+              Number(data.by_gases.co2).toFixed((data.by_gases.co2 < 1) ? 2 : 0),
+              Number(data.by_gases.co2_other).toFixed((data.by_gases.co2_other < 1) ? 2 : 0),
+              Number(data.by_gases.n2o).toFixed((data.by_gases.n2o < 1) ? 2 : 0),
+            ] : [],
             name: 'Constituent Gases'
           }
         ]
@@ -176,7 +182,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       setError('Please fill up the whole form. Amount should be more than 0.')
     } else {
       setError('')
-      addDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh })
+      addDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm })
     }
   }
 
@@ -186,7 +192,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       setError('Please fill up the whole form. Amount should be more than 0.')
     } else {
       setError('')
-      updateDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID })
+      updateDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit })
     }
   }
 
@@ -203,14 +209,14 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
             <p className='text-sm text-slate-500'>Calculate total estimated emissions produced for a particular activity, in kgCO2e, using the available emission factors.</p>
             {(error === '') ? <></> : (<p className='text-sm text-red-400'>{error}</p>)}
             <p className='text-slate-500'>Sector:</p>
-            <select value={formDetails.sector} onChange={e => setFormDetails(p => {return{...p, sector: e.target.value}})} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+            <select value={formDetails.sector} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, sector: e.target.value}})} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
               <option value=''>Choose...</option>
               {formOptions.sector.map((e, i) => (
                 <option key={i} value={e}>{e}</option>
               ))}
             </select>
             <p className='text-slate-500'>Category:</p>
-            <select value={formDetails.category} onChange={e => setFormDetails(p => {return{...p, category: e.target.value}})} disabled={(formDetails.sector === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+            <select value={formDetails.category} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, category: e.target.value}})} disabled={(formDetails.sector === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
               <option value=''>Choose...</option>
               {formOptions.category.map((e, i) => (
                 <option key={i} value={e}>{e}</option>
@@ -218,8 +224,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
             </select>
             <p className='text-slate-500'>Amount:</p>
             <div className='h-fit w-full grid grid-cols-[1fr_100px] gap-[10px] sm:grid-cols-[1fr_80px]'>
-              <input value={formDetails.amount} onChange={e => setFormDetails(p => {return{...p, amount: e.target.value}})} disabled={(formDetails.category === '') ? true : false} type='number' placeholder='1000' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
-              <select value={formDetails.unit} onChange={e => setFormDetails(p => {return{...p, unit: e.target.value}})} disabled={(formDetails.category === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+              <input value={formDetails.amount} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, amount: e.target.value}})} disabled={(formDetails.category === '') ? true : false} type='number' placeholder='1000' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+              <select value={formDetails.unit} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, unit: e.target.value}})} disabled={(formDetails.category === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
                 <option value=''>Choose...</option>
                 {formOptions.unit.map((e, i) => (
                   <option key={i} value={e}>{e}</option>
@@ -227,8 +233,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </select>
             </div>
             <p className='text-slate-500'>Date:</p>
-            <input value={formDetails.date} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM-DD')}})} type='date' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
-            <button onClick={() => handleAdd()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
+            <input value={formDetails.date} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM')}})} type='month' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+            <button onKeyDown={e => (e.key === 'Enter') && handleAdd()} onClick={() => handleAdd()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
               {formLoading ? (
                 <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
               ) : 'ADD'}
@@ -248,14 +254,14 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
             <p className='text-sm text-slate-500'>Calculate total estimated emissions produced for a particular activity, in kgCO2e, using the available emission factors.</p>
             {(error === '') ? <></> : (<p className='text-sm text-red-400'>{error}</p>)}
             <p className='text-slate-500'>Sector:</p>
-            <select value={formDetails.sector} onChange={e => setFormDetails(p => {return{...p, sector: e.target.value}})} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+            <select value={formDetails.sector} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, sector: e.target.value}})} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
               <option value=''>Choose...</option>
               {formOptions.sector.map((e, i) => (
                 <option key={i} value={e}>{e}</option>
               ))}
             </select>
             <p className='text-slate-500'>Category:</p>
-            <select value={formDetails.category} onChange={e => setFormDetails(p => {return{...p, category: e.target.value}})} disabled={(formDetails.sector === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+            <select value={formDetails.category} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, category: e.target.value}})} disabled={(formDetails.sector === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
               <option value=''>Choose...</option>
               {formOptions.category.map((e, i) => (
                 <option key={i} value={e}>{e}</option>
@@ -263,8 +269,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
             </select>
             <p className='text-slate-500'>Amount:</p>
             <div className='h-fit w-full grid grid-cols-[1fr_100px] gap-[10px] sm:grid-cols-[1fr_80px]'>
-              <input value={formDetails.amount} onChange={e => setFormDetails(p => {return{...p, amount: e.target.value}})} disabled={(formDetails.category === '') ? true : false} type='number' placeholder='1000' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
-              <select value={formDetails.unit} onChange={e => setFormDetails(p => {return{...p, unit: e.target.value}})} disabled={(formDetails.category === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
+              <input value={formDetails.amount} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, amount: e.target.value}})} disabled={(formDetails.category === '') ? true : false} type='number' placeholder='1000' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+              <select value={formDetails.unit} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, unit: e.target.value}})} disabled={(formDetails.category === '') ? true : false} className='h-[40px] w-full border border-slate-300 rounded-md px-[5px]'>
                 <option value=''>Choose...</option>
                 {formOptions.unit.map((e, i) => (
                   <option key={i} value={e}>{e}</option>
@@ -272,8 +278,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </select>
             </div>
             <p className='text-slate-500'>Date:</p>
-            <input value={formDetails.date} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM-DD')}})} type='date' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
-            <button onClick={() => handleEdit()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
+            <input value={formDetails.date} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM')}})} type='month' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+            <button onKeyDown={e => (e.key === 'Enter') && handleEdit()} onClick={() => handleEdit()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
               {formLoading ? (
                 <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
               ) : 'EDIT'}
@@ -283,7 +289,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       </div>
 
       {/* dashboard */}
-      <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-200 flex justify-center'>
+      <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-200 flex justify-center'>
         <div className='h-fit w-full max-w-[1700px] p-[20px] flex flex-col gap-[20px]'>
           {/* top */}
           <div className='h-fit w-full flex items-center justify-between gap-[10px]'>
@@ -300,7 +306,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                   chartSector.map((e, i) => (
                     <div className='h-full w-full flex items-center justify-between py-[10px] text-sm border-b border-b-slate-300 gap-[5px]' key={i}>
                       <p className='text-slate-500'>{e.name}</p>
-                      <p className='font-semibold'>{e.value}kg</p>
+                      <p className='font-semibold'>{Number(e.value).toFixed(0)}kg</p>
                     </div>
                   ))
                 ) : (
@@ -313,7 +319,11 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
             <div className='h-fit w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
               <div className='h-fit w-full flex items-center justify-between'>
-                <p className='font-medium'>Carbon Footprint {'('}200kg{')'}</p>
+                {data?.by_gases?.co2e_total ? (
+                  <p className='font-medium'>Carbon Footprint {'(' + (data.by_gases.co2e_total*1).toFixed(0) +' kg)'}</p>
+                ) : (
+                  <p className='font-medium'>Carbon Footprint</p>
+                )}
               </div>
               <div className='h-[500px] w-full'>
                 <ReactEChart option={footprintMixedChartOption} style={{height: '100%', width: '100%', minWidth: '420px'}}/>
@@ -337,20 +347,20 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                   data.data.map((e, i) => (
                     <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]' key={i}>
                       <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                        <p className='text-base'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span></p>
+                        <p className='text-base leading-tight'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span> <span className='text-sm text-slate-500 font-semibold'>{'('}{moment(e.date).format('MMMM YYYY')}{')'}</span></p>
                         <div className='w-full grid grid-cols-2'>
                           <div className='h-fit w-full flex flex-col'>
                             <p className='text-slate-500'>Category</p>
-                            <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(3)} {e.activity_data.activity_unit}</p>
+                            <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(0)} {e.activity_data.activity_unit}</p>
                           </div>
                           <div className='h-fit w-full flex flex-col'>
                             <p className='text-slate-500'>Emission</p>
-                            <p className='text-base font-semibold'>{Number(e.co2e).toFixed(3)} {e.co2e_unit}</p>
+                            <p className='text-base font-semibold'>{Number(e.co2e).toFixed(0)} {e.co2e_unit}</p>
                           </div>
                         </div>
                       </div>
                       <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: e.date, sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: moment(e.date).format('YYYY-MM'), sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
                           {formLoading ? (
                             <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
                           ) : (
@@ -379,23 +389,23 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               <div className='h-fit w-full flex flex-col'>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2e</p>
-                  <p className='font-semibold'>{data?.by_gases?.co2e ? (data.by_gases.co2e*1).toFixed(3) : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2e_total ? (data.by_gases.co2e_total*1).toFixed((data.by_gases.co2e_total < 1) ? 2: 0) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>ch4</p>
-                  <p className='font-semibold'>{data?.by_gases?.ch4 ? (data.by_gases.ch4*1).toFixed(3) : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.ch4 ? (data.by_gases.ch4*1).toFixed((data.by_gases.ch4 < 1) ? 2: 0) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2</p>
-                  <p className='font-semibold'>{data?.by_gases?.co2 ? (data.by_gases.co2*1).toFixed(3) : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2 ? (data.by_gases.co2*1).toFixed((data.by_gases.co2 < 1) ? 2: 0) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>n2o</p>
-                  <p className='font-semibold'>{data?.by_gases?.n2o ? (data.by_gases.n2o*1).toFixed(3) : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.n2o ? (data.by_gases.n2o*1).toFixed((data.by_gases.n2o < 1) ? 2: 0) : '0'}kg</p>
                 </div>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
                   <p className='text-slate-500'>co2_other</p>
-                  <p className='font-semibold'>{data?.by_gases?.co2_other ? (data.by_gases.co2_other*1).toFixed(3) : '0'}kg</p>
+                  <p className='font-semibold'>{data?.by_gases?.co2_other ? (data.by_gases.co2_other*1).toFixed((data.by_gases.co2_other < 1) ? 2: 0) : '0'}kg</p>
                 </div>
               </div>
             </div>
@@ -410,20 +420,20 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                   data.data.map((e, i) => (
                     <div className='h-fit w-full p-[10px] grid grid-cols-[1fr_50px] text-sm border border-slate-200 rounded-lg gap-[10px]' key={i}>
                       <div className='h-fit w-full flex flex-col text-sm gap-[5px]'>
-                        <p className='text-base'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span></p>
+                        <p className='text-base leading-tight'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span> <span className='text-sm text-slate-500 font-semibold'>{'('}{moment(e.date).format('MMMM YYYY')}{')'}</span></p>
                         <div className='w-full grid grid-cols-2'>
                           <div className='h-fit w-full flex flex-col'>
                             <p className='text-slate-500'>Category</p>
-                            <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(3)} {e.activity_data.activity_unit}</p>
+                            <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(0)} {e.activity_data.activity_unit}</p>
                           </div>
                           <div className='h-fit w-full flex flex-col'>
                             <p className='text-slate-500'>Emission</p>
-                            <p className='text-base font-semibold'>{Number(e.co2e).toFixed(3)} {e.co2e_unit}</p>
+                            <p className='text-base font-semibold'>{Number(e.co2e).toFixed(0)} {e.co2e_unit}</p>
                           </div>
                         </div>
                       </div>
                       <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: e.date, sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: moment(e.date).format('YYYY-MM'), sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
                           {formLoading ? (
                             <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
                           ) : (

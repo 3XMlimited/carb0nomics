@@ -155,7 +155,7 @@ export const changePasswordAPI = ({ setLoading, setError, details, setDetails, s
     })
 };
 
-export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh }) => {
+export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm}) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const token = window.localStorage.getItem('token')
@@ -168,13 +168,14 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetai
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
             "Authorization": "Bearer "+token,
         },
-        data: { ...formDetails, amount: Number(formDetails.amount), id: uuidv4() },
+        data: { ...formDetails, date: moment(formDetails.date).format('YYYY-MM-01'), amount: Number(formDetails.amount), id: uuidv4() },
         user_id: JSON.parse(user)._id
     })
     .then((response) => {
         const obj = response.data;
         if (obj?.result?.emissions) {
-            setFormDetails({ date: moment().format('YYYY-MM-DD'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setFormDetails({ date: moment().format('YYYY-MM'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setDisplayForm(false)
             setRefresh(p => !p)
         } else {
             setError('Error! Please try again')
@@ -217,7 +218,7 @@ export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
     })
 };
 
-export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID }) => {
+export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const token = window.localStorage.getItem('token')
@@ -236,18 +237,37 @@ export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDe
         }
     })
     .then((response) => {
-        addDataAPIForEdit({ formDetails, setFormLoading, setError, setFormDetails, setRefresh })
+        addDataAPIForEdit({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayFormEdit })
     })
     .catch((err) => {
         console.log(err);
     })
-    .finally(() => {
-        setFormLoading(false)
-    })
 };
 
-const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh }) => {
-    setFormLoading(true)
+export const actionPlanAPI = ({ category, percent, value }) => {
+    const url = `${host}/api/v1/data/target`;
+    const token = window.localStorage.getItem('token')
+    const user = window.localStorage.getItem('user')
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+token,
+        },
+        data: {
+            category: category,
+            percent: percent,
+            value: value
+        },
+        user_id: JSON.parse(user)._id,
+    })
+    .then((response) => console.log(response))
+    .catch((err) => console.log(err))
+};
+
+const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayFormEdit }) => {
     const url = `${host}/api/v1/data`;
     const token = window.localStorage.getItem('token')
     const user = window.localStorage.getItem('user')
@@ -259,13 +279,14 @@ const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetai
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
             "Authorization": "Bearer "+token,
         },
-        data: { ...formDetails, amount: Number(formDetails.amount), id: uuidv4() },
+        data: { ...formDetails, date: moment(formDetails.date).format('YYYY-MM-01'), amount: Number(formDetails.amount), id: uuidv4() },
         user_id: JSON.parse(user)._id
     })
     .then((response) => {
         const obj = response.data;
         if (obj?.result?.emissions) {
-            setFormDetails({ date: moment().format('YYYY-MM-DD'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setFormDetails({ date: moment().format('YYYY-MM'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setDisplayFormEdit(false)
             setRefresh(p => !p)
         } else {
             setError('Error! Please try again')
@@ -279,7 +300,7 @@ const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetai
     })
 };
 
-export const esgDataAPI = ({ setLoading, setData, symbol }) => {
+export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
     setLoading(true)
     const url = `${host}/api/v1/data/esgChart`;
     const token = window.localStorage.getItem('token')
@@ -296,14 +317,51 @@ export const esgDataAPI = ({ setLoading, setData, symbol }) => {
     .then((response) => {
         const obj = response.data
         if (obj.data) {
-            setData(obj.data)
+            if (obj.data.length > 0) {
+                setData(obj.data)
+            } else {
+                setData([])
+                setError("This company symbol either doesn't exist or has no scores recorded.")
+            }
+        } else {
+            setData([])
+            setError("This company symbol either doesn't exist or has no scores recorded.")
         }
     })
     .catch((err) => {
         console.log(err);
+        setData([])
+        setError("This company symbol either doesn't exist or has no scores recorded.")
     })
     .finally(() => {
         setLoading(false)
+    })
+};
+
+export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
+    const url = `${host}/api/v1/data/info`;
+    const token = window.localStorage.getItem('token')
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+token,
+        },
+        symbol: symbol
+    })
+    .then((response) => {
+        const obj = response.data
+        if (obj.data) {
+            setCompany(obj.data)
+        } else {
+            setCompany('')
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        setCompany('')
     })
 };
 

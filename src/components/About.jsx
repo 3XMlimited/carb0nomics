@@ -11,17 +11,11 @@ const About = ({ setCurrentRoute, loginStatus }) => {
     setCurrentRoute('about')
   }, [])
 
-  useEffect(() => {
-    if (loginStatus.login === true) {
-      navigate('/dashboard')
-    }
-  }, [loginStatus.login])
-
   return (
     <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-100 flex flex-col'>
       {/* hero */}
       <div className='h-fit w-full flex justify-center bg-slate-100'>
-        <div className='h-fit min-h-[200px] w-full max-w-[1024px] px-[20px] py-[40px] flex flex-col items-center gap-[40px]'>
+        <div className='h-fit min-h-[200px] w-full px-[20px] py-[40px] flex flex-col items-center gap-[40px]'>
           <p className='text-4xl font-bold text-center xxl:text-3xl sm:text-2xl'>Carb0nomics walks towards to a carbon neutral future</p>
           <img src={about} alt="logo" className='h-[300px] w-full max-w-[600px] object-cover' />
         </div>
