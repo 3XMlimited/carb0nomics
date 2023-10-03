@@ -18,10 +18,17 @@
   width: 10px;
   background: transparent;
 }
+
 .fancy-scrollbar::-webkit-scrollbar-thumb {
   width: 10px;
   background: #AAA;
   border-radius: 10px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* accent = emerald-400 */

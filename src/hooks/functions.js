@@ -244,7 +244,8 @@ export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDe
     })
 };
 
-export const actionPlanAPI = ({ category, percent, value }) => {
+export const actionPlanAPI = ({ category, percent, value, setRefresh, setReductionLoading }) => {
+    setReductionLoading(true)
     const url = `${host}/api/v1/data/target`;
     const token = window.localStorage.getItem('token')
     const user = window.localStorage.getItem('user')
@@ -263,8 +264,12 @@ export const actionPlanAPI = ({ category, percent, value }) => {
         },
         user_id: JSON.parse(user)._id,
     })
-    .then((response) => console.log(response))
+    .then((response) => {
+        console.log(response)
+        setRefresh(p => !p)
+    })
     .catch((err) => console.log(err))
+    .finally(() => setReductionLoading(false))
 };
 
 const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayFormEdit }) => {
