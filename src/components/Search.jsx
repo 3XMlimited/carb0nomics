@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LuArrowUpDown } from 'react-icons/lu'
+import { BsArrowDown, BsArrowUp } from 'react-icons/bs'
 import ReactEChart from 'echarts-for-react'
 import moment from 'moment'
 
@@ -9,13 +10,14 @@ import { esgDataAPI, esgListDataAPI, esgCompanyNameAPI } from '../hooks/function
 const Search = ({ setCurrentRoute, loginStatus }) => {
   const navigate = useNavigate()
   
-  const [displayList, setDisplayList] = useState(false)
+  const [displayList, setDisplayList] = useState(true)
   const [form, setForm] = useState('')
   const [company, setCompany] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
   const [listData, setListData] = useState([])
+  const [sortConditions, setSortConditions] = useState({ esg: { selected: true, sort: 'dsc' }, environment: { selected: false, sort: 'asc' }, social: { selected: false, sort: 'asc' }, governance: { selected: false, sort: 'asc' } })
 
   useEffect(() => {
     setCurrentRoute('search')
@@ -104,6 +106,43 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
     }
   }
 
+  const handleSort = (option) => {
+    const temp = [...listData]
+    if (option === 'esg') {
+      if (sortConditions.esg.sort === 'asc') {
+        setListData(temp.sort((a, b) => b.esg - a.esg))
+        setSortConditions(p => { return { esg: { selected: true, sort: 'dsc' }, environment: { ...p.environment, selected: false }, social: { ...p.social, selected: false }, governance: { ...p.governance, selected: false } } })
+      } else {
+        setListData(temp.sort((a, b) => a.esg - b.esg))
+        setSortConditions(p => { return { esg: { selected: true, sort: 'asc' }, environment: { ...p.environment, selected: false }, social: { ...p.social, selected: false }, governance: { ...p.governance, selected: false } } })
+      }
+    } else if (option === 'environment') {
+      if (sortConditions.environment.sort === 'asc') {
+        setListData(temp.sort((a, b) => b.environment - a.environment))
+        setSortConditions(p => { return { esg: { ...p.esg, selected: false }, environment: { selected: true, sort: 'dsc' }, social: { ...p.social, selected: false }, governance: { ...p.governance, selected: false } } })
+      } else {
+        setListData(temp.sort((a, b) => a.environment - b.environment))
+        setSortConditions(p => { return { esg: { ...p.esg, selected: false }, environment: { selected: true, sort: 'asc' }, social: { ...p.social, selected: false }, governance: { ...p.governance, selected: false } } })
+      }
+    } else if (option === 'social') {
+      if (sortConditions.social.sort === 'asc') {
+        setListData(temp.sort((a, b) => b.social - a.social))
+        setSortConditions(p => { return { esg: { ...p.esg, selected: false }, environment: { ...p.environment, selected: false }, social: { selected: true, sort: 'dsc' }, governance: { ...p.governance, selected: false } } })
+      } else {
+        setListData(temp.sort((a, b) => a.social - b.social))
+        setSortConditions(p => { return { esg: { ...p.esg, selected: false }, environment: { ...p.environment, selected: false }, social: { selected: true, sort: 'asc' }, governance: { ...p.governance, selected: false } } })
+      }
+    } else if (option === 'governance') {
+      if (sortConditions.governance.sort === 'asc') {
+        setListData(temp.sort((a, b) => b.governance - a.governance))
+        setSortConditions(p => { return { esg: { ...p.esg, selected: false }, environment: { ...p.environment, selected: false }, social: { ...p.social, selected: false }, governance: { selected: true, sort: 'dsc' } } })
+      } else {
+        setListData(temp.sort((a, b) => a.governance - b.governance))
+        setSortConditions(p => { return { esg: { ...p.esg, selected: false }, environment: { ...p.environment, selected: false }, social: { ...p.social, selected: false }, governance: { selected: true, sort: 'asc' } } })
+      }
+    }
+  }
+
   return (
     <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-200 flex justify-center'>
       <div className='h-fit w-full max-w-[1700px] p-[20px] flex flex-col gap-[20px]'>
@@ -157,48 +196,88 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
           </div>
 
           {/* top 21 list */}
-          <div className={`${displayList ? 'scale-100 h-fit w-full opacity-100' : 'scale-0 h-0 w-0 opacity-0'} flex bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl origin-top-right duration-500`}>
-            <div className='h-fit w-full flex flex-col gap-[10px] p-[10px]'>
-              {/* <div className='h-fit w-full flex items-center flex-wrap gap-[10px]'>
-                <p className='md:text-sm'>Sort By:</p>
-                <button className='h-[40px] w-fit px-[5px] bg-slate-100 border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]'>ESG<LuArrowUpDown size={16}/></button>
-                <button className='h-[40px] w-fit px-[5px] bg-slate-100 border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]'>Governance<LuArrowUpDown size={16}/></button>
-                <button className='h-[40px] w-fit px-[5px] bg-slate-100 border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]'>Environment<LuArrowUpDown size={16}/></button>
-                <button className='h-[40px] w-fit px-[5px] bg-slate-100 border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]'>Social<LuArrowUpDown size={16}/></button>
-              </div> */}
-              <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
-              <div className='h-fit w-full grid grid-cols-2 gap-[10px] xxl:grid-cols-1'>
-                {listData.map((e, i) => (
-                  <div key={i} onClick={() => {setDisplayList(false); esgDataAPI({ setLoading, setData, symbol: e.symbol, setError }); esgCompanyNameAPI({ setCompany, symbol: e.symbol });}} className='h-full w-full p-[10px] border border-slate-200 rounded-lg flex gap-[10px] cursor-pointer duration-200 hover:opacity-50'>
-                    <div className='h-full flex flex-col items-center justify-center px-[20px] md:px-[10px] sm:hidden'>
-                      <p className='font-medium'>ESG</p>
-                      <p className='text-3xl font-bold'>{e.esg ? Number(e.esg).toFixed(0) : '-'}</p>
-                    </div>
-                    <div className='h-full flex-1 flex flex-col justify-center gap-[5px]'>
-                      <p className='md:text-sm'>{e.company} <span className='text-slate-500'>{'(' + e.symbol + ')'}</span></p>
-                      <div className='grid grid-cols-3 text-slate-500 md:grid-cols-1'>
-                        <div className='w-full hidden flex-col sm:flex md:flex-row md:gap-[5px] md:items-center'>
-                          <p className='text-sm'>ESG</p>
-                          <p className='text-slate-800 font-bold'>{e.esg ? Number(e.esg).toFixed(0) : '-'}</p>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
-                          <p className='text-sm'>Environment</p>
-                          <p className='text-slate-800 font-bold'>{e.environment ? Number(e.environment).toFixed(0) : '-'}</p>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
-                          <p className='text-sm'>Social</p>
-                          <p className='text-slate-800 font-bold'>{e.social ? Number(e.social).toFixed(0) : '-'}</p>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
-                          <p className='text-sm'>Governance</p>
-                          <p className='text-slate-800 font-bold'>{e.governance ? Number(e.governance).toFixed(0) : '-'}</p>
+          <div className={`${displayList ? 'scale-100 h-fit w-full opacity-100' : 'scale-0 h-0 w-0 opacity-0'} ${loading ? 'animate-pulse' : ''} flex bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl origin-top-right duration-500`}>
+            {loading ? (
+              <div className='h-fit w-full flex flex-col gap-[10px] p-[10px]'>
+                <div className='flex flex-wrap items-center gap-[10px]'>
+                  <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
+                  <div className='h-[20px] w-[20px] border-4 border-emerald-100 border-y-4 border-y-emerald-400 rounded-full animate-spin'/>
+                </div>
+                <div className='h-fit w-full grid grid-cols-2 gap-[10px] xxl:grid-cols-1'>
+                  {[...new Array(4)].map((e, i) => (
+                    <div key={i} className='h-full w-full p-[10px] border border-slate-200 rounded-lg flex gap-[10px] cursor-pointer duration-200 hover:opacity-50'>
+                      <div className='h-full flex flex-col items-center justify-center px-[20px] md:px-[10px] sm:hidden'>
+                        <p className='font-medium'>ESG</p>
+                        <p className='text-3xl font-bold'>-</p>
+                      </div>
+                      <div className='h-full flex-1 flex flex-col justify-center gap-[5px]'>
+                        <p className='md:text-sm'>Company <span className='text-slate-500'>{'( Symbol )'}</span></p>
+                        <div className='grid grid-cols-3 text-slate-500 md:grid-cols-1'>
+                          <div className='w-full hidden flex-col sm:flex md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>ESG</p>
+                            <p className='text-slate-800 font-bold'>-</p>
+                          </div>
+                          <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>Environment</p>
+                            <p className='text-slate-800 font-bold'>-</p>
+                          </div>
+                          <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>Social</p>
+                            <p className='text-slate-800 font-bold'>-</p>
+                          </div>
+                          <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>Governance</p>
+                            <p className='text-slate-800 font-bold'>-</p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className='h-fit w-full flex flex-col gap-[10px] p-[10px]'>
+                <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
+                <div className='h-fit w-full flex items-center flex-wrap gap-[10px]'>
+                  <p className='md:text-sm'>Sort By:</p>
+                  <button onClick={() => handleSort('esg')} className={`h-[40px] w-fit px-[5px] ${sortConditions.esg.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>ESG{sortConditions.esg.selected ? ((sortConditions.esg.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('environment')} className={`h-[40px] w-fit px-[5px] ${sortConditions.environment.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Environment{sortConditions.environment.selected ? ((sortConditions.environment.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('social')} className={`h-[40px] w-fit px-[5px] ${sortConditions.social.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Social{sortConditions.social.selected ? ((sortConditions.social.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('governance')} className={`h-[40px] w-fit px-[5px] ${sortConditions.governance.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Governance{sortConditions.governance.selected ? ((sortConditions.governance.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                </div>
+                <div className='h-fit w-full grid grid-cols-2 gap-[10px] xxl:grid-cols-1'>
+                  {listData.map((e, i) => (
+                    <div key={i} onClick={() => {setDisplayList(false); esgDataAPI({ setLoading, setData, symbol: e.symbol, setError }); esgCompanyNameAPI({ setCompany, symbol: e.symbol });}} className='h-full w-full p-[10px] border border-slate-200 rounded-lg flex gap-[10px] cursor-pointer duration-200 hover:opacity-50'>
+                      <div className='h-full flex flex-col items-center justify-center px-[20px] md:px-[10px] sm:hidden'>
+                        <p className='font-medium'>ESG</p>
+                        <p className='text-3xl font-bold'>{e.esg ? Number(e.esg).toFixed(0) : '-'}</p>
+                      </div>
+                      <div className='h-full flex-1 flex flex-col justify-center gap-[5px]'>
+                        <p className='md:text-sm'>{e.company} <span className='text-slate-500'>{'(' + e.symbol + ')'}</span></p>
+                        <div className='grid grid-cols-3 text-slate-500 md:grid-cols-1'>
+                          <div className='w-full hidden flex-col sm:flex md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>ESG</p>
+                            <p className='text-slate-800 font-bold'>{e.esg ? Number(e.esg).toFixed(0) : '-'}</p>
+                          </div>
+                          <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>Environment</p>
+                            <p className='text-slate-800 font-bold'>{e.environment ? Number(e.environment).toFixed(0) : '-'}</p>
+                          </div>
+                          <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>Social</p>
+                            <p className='text-slate-800 font-bold'>{e.social ? Number(e.social).toFixed(0) : '-'}</p>
+                          </div>
+                          <div className='w-full flex flex-col md:flex-row md:gap-[5px] md:items-center'>
+                            <p className='text-sm'>Governance</p>
+                            <p className='text-slate-800 font-bold'>{e.governance ? Number(e.governance).toFixed(0) : '-'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -26,7 +26,7 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
             setError({ email: '', password: '' })
             window.localStorage.setItem('token', obj.token)
             window.localStorage.setItem('user', JSON.stringify(obj))
-            setLoginStatus(p => {return{...p, login: true, email: obj.email, level: obj.level, expiry: obj.expiry, id: obj._id}})
+            setLoginStatus(p => {return{...p, login: true, level: obj.level, expiry: obj.expiry}})
             navigate('/dashboard')
         } else {
             setError({ email: 'Login Failed! Make sure your email is correct.', password: 'Login Failed! Make sure your password is correct.' })
@@ -63,8 +63,8 @@ export const signupAPI = ({ setLoading, setError, details, setDetails, navigate,
             setError({ email: '', password: '', confirmPassword: '' })
             window.localStorage.setItem('token', obj.token)
             window.localStorage.setItem('user', JSON.stringify(obj))
-            setLoginStatus(p => {return{...p, login: true, email: obj.email, id: obj._id}})
-            navigate('/dashboard')
+            // setLoginStatus(p => {return{...p, login: true }})
+            // navigate('/dashboard')
         } else {
             setError({ email: 'Signup Failed! Make sure provide a correct email.', password: 'Signup Failed! Make sure your password is 6 to 20 characters long without any space in-between.', confirmPassword: '' })
         }
@@ -370,15 +370,15 @@ export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
     })
 };
 
-export const esgListDataAPI = ({ setLoading, setListData }) => {
+export const esgListDataAPI = async ({ setLoading, setListData }) => {
     setLoading(true)
     let top = top30.map(e => { return { company: e.company, symbol: e.symbol } })
-    let result = []
     const url = `${host}/api/v1/data/esgChart`;
     const token = window.localStorage.getItem('token')
 
-    top.forEach(e => {
-        axios.post(url, {
+    await Promise.allSettled(top.map(async e => {
+        let result = []
+        const response = await axios.post(url, {
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Headers": "Content-Type",
@@ -387,28 +387,29 @@ export const esgListDataAPI = ({ setLoading, setListData }) => {
             },
             symbol: e.symbol
         })
-        .then((response) => {
+        if (response.data) {
             const obj = response.data
             if (obj.data) {
-                result.push({
+                result = {
                     company: e.company,
                     symbol: e.symbol,
                     esg: obj.data[obj.data.length-1].esg,
                     environment: obj.data[obj.data.length-1].environment,
                     social: obj.data[obj.data.length-1].social,
                     governance: obj.data[obj.data.length-1].governance,
-                })
+                }
             }
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-        .finally(() => {
-            setLoading(false)
-        })
-    });
+        }
+        return result
+    }))
+    .then(response => {
+        setListData(response.filter(f => f.status === 'fulfilled').map(e => e.value).sort((a, b) => b.esg - a.esg))
+    })
+    .catch(error => {
+        setListData([])
+        console.log(error)
+    })
 
-    setListData(result)
     setLoading(false)
 };
 

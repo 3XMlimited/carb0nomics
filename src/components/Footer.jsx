@@ -22,8 +22,8 @@ const Footer = () => {
               <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/')}>Home</p>
               <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/about')}>About</p>
               <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/contact')}>Contact</p>
+              <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/pricing')}>Pricing</p>
               <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/policy')}>Policy</p>
-              {/* <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/pricing')}>Pricing</p> */}
             </div>
           </div>
           <p className='text-sm'>© Copyright 2023 Carb0nomics. All rights reserved.</p>
