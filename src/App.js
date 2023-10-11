@@ -91,7 +91,7 @@ function App() {
           <Route exact path='/actionplan' element={<ActionPlan setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
           <Route exact path='/search' element={<Search setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
           <Route exact path='/account' element={<Account setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
-          <Route exact path='/thankyou/:id' element={<ThankYou setCurrentRoute={setCurrentRoute} setLoginStatus={setLoginStatus} />}/>
+          <Route exact path='/thankyou' element={<ThankYou setCurrentRoute={setCurrentRoute} setLoginStatus={setLoginStatus} />}/>
           <Route exact path='/unsuccessful' element={<Unsuccessful setCurrentRoute={setCurrentRoute} />}/>
         </Routes>
       </div>

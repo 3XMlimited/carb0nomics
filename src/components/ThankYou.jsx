@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import axios from 'axios'
 
@@ -8,7 +8,6 @@ import thankyouBG from '../assets/thankyouBG.jpg'
 
 const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
     const navigate = useNavigate()
-    const { id } = useParams()
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -16,7 +15,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
         
         const sessionID = Cookies.get('sessionID') 
 
-        if (sessionID !== id) {
+        if (!sessionID) {
             navigate('/')   
         } else {
             Cookies.remove('sessionID')
