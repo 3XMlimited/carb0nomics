@@ -1,9 +1,13 @@
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
+import Cookies from "js-cookie";
+
 import { host } from "./host";
 import { top30 } from "../local";
 
+// AUTHENTICATION ***
+// Login
 export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, setLoginStatus }) => {
     setLoading(true);
     setError({ email: '', password: '' })
@@ -24,10 +28,13 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
         if (obj.success) {
             setDetails({ email: '', password: '' })
             setError({ email: '', password: '' })
-            window.localStorage.setItem('token', obj.token)
-            window.localStorage.setItem('user', JSON.stringify(obj))
-            setLoginStatus(p => {return{...p, login: true, level: obj.level, expiry: obj.expiry}})
-            navigate('/dashboard')
+            Cookies.set('user', JSON.stringify(obj), { expires: 7 })
+            setLoginStatus(p => { return { ...p, login: true, plan: obj.plan }})
+            if (obj.plan === 'none') {
+                navigate('/pricing')
+            } else {
+                navigate('/dashboard')
+            }
         } else {
             setError({ email: 'Login Failed! Make sure your email is correct.', password: 'Login Failed! Make sure your password is correct.' })
         }
@@ -41,10 +48,39 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
     })
 };
 
+// Register - check if user already in database
 export const signupAPI = ({ setLoading, setError, details, setDetails, navigate, setLoginStatus }) => {
     setLoading(true);
-    setError({ email: '', password: '', confirmPassword: '' })
+    setError({ email: '', username: '', password: '', confirmPassword: '' })
 
+    const url = `${host}/api/v1/auth/check_user_email`;
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+        },
+        email: details.email.trim(),
+        password: details.password.trim(),
+    })
+    .then((response) => {
+        const obj = response.data;
+        if (obj.success) {
+            registerAPI({ setLoading, setError, details, setDetails, navigate, setLoginStatus })
+        } else {
+            setError({ email: 'Email already taken.', username: '', password: '', confirmPassword: '' })
+            setLoading(false)
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        setLoading(false)
+    })
+};
+
+// Register - after checking register the user
+const registerAPI = ({ setLoading, setError, details, setDetails, navigate, setLoginStatus }) => {
     const url = `${host}/api/v1/auth/signup`;
 
     axios.post(url, {
@@ -54,19 +90,19 @@ export const signupAPI = ({ setLoading, setError, details, setDetails, navigate,
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
         },
         email: details.email.trim(),
+        username: details.username.trim(),
         password: details.password.trim(),
     })
     .then((response) => {
         const obj = response.data;
         if (obj.success) {
-            setDetails({ email: '', password: '', confirmPassword: '' })
-            setError({ email: '', password: '', confirmPassword: '' })
-            window.localStorage.setItem('token', obj.token)
-            window.localStorage.setItem('user', JSON.stringify(obj))
-            // setLoginStatus(p => {return{...p, login: true }})
-            // navigate('/dashboard')
+            setDetails({ email: '', username: '', password: '', confirmPassword: '' })
+            setError({ email: '', username: '', password: '', confirmPassword: '' })
+            Cookies.set('user', JSON.stringify({...obj, billingID: obj.customerID}), { expires: 7 })
+            setLoginStatus(p => {return{...p, login: true, plan: 'none' }})
+            navigate('/pricing')
         } else {
-            setError({ email: 'Signup Failed! Make sure provide a correct email.', password: 'Signup Failed! Make sure your password is 6 to 20 characters long without any space in-between.', confirmPassword: '' })
+            setError({ email: 'Make sure provide a correct email.', username: 'Make sure your username contains no spaces in-between.', password: 'Make sure your password is 6 to 20 characters long without any space in-between.', confirmPassword: '' })
         }
     })
     .catch((err) => {
@@ -78,6 +114,7 @@ export const signupAPI = ({ setLoading, setError, details, setDetails, navigate,
     })
 };
 
+// Forgot Password - send code
 export const sendCodeAPI = ({ setLoading, setError, details, setDisplayChange, setCountdown }) => {
     setLoading(true);
     setError({ email: '', code: '', password: '', confirmPassword: '' })
@@ -119,6 +156,7 @@ export const sendCodeAPI = ({ setLoading, setError, details, setDisplayChange, s
     })
 };
 
+// Forgot Password - change password
 export const changePasswordAPI = ({ setLoading, setError, details, setDetails, setDisplayChange, navigate }) => {
     setLoading(true);
     setError({ email: '', code: '', password: '', confirmPassword: '' })
@@ -155,21 +193,30 @@ export const changePasswordAPI = ({ setLoading, setError, details, setDetails, s
     })
 };
 
+
+
+
+
+// DASHBOARD ***
+// Add emission data
 export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm}) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
-    const token = window.localStorage.getItem('token')
-    const user = window.localStorage.getItem('user')
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
 
     axios.post(url, {
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
+            "Authorization": "Bearer "+user?.token,
         },
         data: { ...formDetails, date: moment(formDetails.date).format('YYYY-MM-01'), amount: Number(formDetails.amount), id: uuidv4() },
-        user_id: JSON.parse(user)._id
+        user_id: user?._id
     })
     .then((response) => {
         const obj = response.data;
@@ -189,21 +236,25 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetai
     })
 };
 
+// Delete emission data
 export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
-    const token = window.localStorage.getItem('token')
-    const user = window.localStorage.getItem('user')
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
 
     axios.delete(url, {
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
+            "Authorization": "Bearer "+user?.token,
         },
         data: {
-            user_id: JSON.parse(user)._id,
+            user_id: user?._id,
             id: id
         }
     })
@@ -218,21 +269,25 @@ export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
     })
 };
 
+// Update emission data - first Delete
 export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
-    const token = window.localStorage.getItem('token')
-    const user = window.localStorage.getItem('user')
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
 
     axios.delete(url, {
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
+            "Authorization": "Bearer "+user?.token,
         },
         data: {
-            user_id: JSON.parse(user)._id,
+            user_id: user?._id,
             id: userID
         }
     })
@@ -244,48 +299,20 @@ export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDe
     })
 };
 
-export const actionPlanAPI = ({ category, percent, value, setRefresh, setReductionLoading }) => {
-    setReductionLoading(true)
-    const url = `${host}/api/v1/data/target`;
-    const token = window.localStorage.getItem('token')
-    const user = window.localStorage.getItem('user')
-
-    axios.post(url, {
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
-        },
-        data: {
-            category: category,
-            percent: percent,
-            value: value
-        },
-        user_id: JSON.parse(user)._id,
-    })
-    .then((response) => {
-        console.log(response)
-        setRefresh(p => !p)
-    })
-    .catch((err) => console.log(err))
-    .finally(() => setReductionLoading(false))
-};
-
+// Update emission data - then add again
 const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayFormEdit }) => {
     const url = `${host}/api/v1/data`;
-    const token = window.localStorage.getItem('token')
-    const user = window.localStorage.getItem('user')
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     axios.post(url, {
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
+            "Authorization": "Bearer "+user?.token,
         },
         data: { ...formDetails, date: moment(formDetails.date).format('YYYY-MM-01'), amount: Number(formDetails.amount), id: uuidv4() },
-        user_id: JSON.parse(user)._id
+        user_id: user?._id
     })
     .then((response) => {
         const obj = response.data;
@@ -305,17 +332,63 @@ const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetai
     })
 };
 
-export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
-    setLoading(true)
-    const url = `${host}/api/v1/data/esgChart`;
-    const token = window.localStorage.getItem('token')
+
+
+
+
+// ACTION PLAN ***
+// Save to database
+export const actionPlanAPI = ({ category, percent, value, setRefresh, setReductionLoading }) => {
+    setReductionLoading(true)
+    const url = `${host}/api/v1/data/target`;
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
 
     axios.post(url, {
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
+            "Authorization": "Bearer "+user?.token,
+        },
+        data: {
+            category: category,
+            percent: percent,
+            value: value
+        },
+        user_id: user?._id,
+    })
+    .then((response) => {
+        setRefresh(p => !p)
+    })
+    .catch((err) => console.log(err))
+    .finally(() => setReductionLoading(false))
+};
+
+
+
+
+
+// SEARCH ***
+// Get ESG Data
+export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
+    setLoading(true)
+    const url = `${host}/api/v1/data/esgChart`;
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+user?.token,
         },
         symbol: symbol
     })
@@ -343,16 +416,21 @@ export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
     })
 };
 
+// Get ESG company name
 export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
     const url = `${host}/api/v1/data/info`;
-    const token = window.localStorage.getItem('token')
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
 
     axios.post(url, {
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-            "Authorization": "Bearer "+token,
+            "Authorization": "Bearer "+user?.token,
         },
         symbol: symbol
     })
@@ -370,11 +448,16 @@ export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
     })
 };
 
+// Get ESG Data - Top 21
 export const esgListDataAPI = async ({ setLoading, setListData }) => {
     setLoading(true)
     let top = top30.map(e => { return { company: e.company, symbol: e.symbol } })
     const url = `${host}/api/v1/data/esgChart`;
-    const token = window.localStorage.getItem('token')
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
 
     await Promise.allSettled(top.map(async e => {
         let result = []
@@ -383,7 +466,7 @@ export const esgListDataAPI = async ({ setLoading, setListData }) => {
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Headers": "Content-Type",
                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                "Authorization": "Bearer "+token,
+                "Authorization": "Bearer "+user?.token,
             },
             symbol: e.symbol
         })
@@ -413,3 +496,42 @@ export const esgListDataAPI = async ({ setLoading, setListData }) => {
     setLoading(false)
 };
 
+
+
+
+
+// PRICING
+// Stripe payment API
+export const basicPaymentAPI = async ({ setLoading }) => {
+    setLoading(true)
+    const url = `${host}/api/v1/payment/monthly?` ;
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
+
+    try {
+        const res = await fetch(url + new URLSearchParams({
+            customerID: user?.billingID
+        }))
+    
+        const obj = await res.json()
+
+        if (obj.session) {
+            if (obj.session.url) {
+                window.open(obj.session.url, '_self')
+                Cookies.set('sessionID', obj.session.id)
+            } else {
+                window.alert("Please try again. Can't get the payment link.")
+            }
+        } else {
+            window.alert("Please try again. Can't get the payment link.")
+        }
+        
+        setLoading(false)
+    } catch (error) {
+        console.log(error);
+        setLoading(false)
+    }
+};

@@ -31,6 +31,12 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
   }, [loginStatus.login])
 
   useEffect(() => {
+    if (loginStatus.plan === 'none') {
+      navigate('/pricing')
+    }
+  }, [loginStatus.plan])
+
+  useEffect(() => {
     const final = []
     const tempCat = categories.map(e => e.categories)
 

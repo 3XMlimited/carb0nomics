@@ -30,6 +30,12 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
   }, [loginStatus.login])
 
   useEffect(() => {
+    if (loginStatus.plan === 'none') {
+      navigate('/pricing')
+    }
+  }, [loginStatus.plan])
+
+  useEffect(() => {
     setForm('TSLA')
     esgDataAPI({ setLoading, setData, symbol: 'TSLA', setError })
     esgListDataAPI({ setLoading, setListData })

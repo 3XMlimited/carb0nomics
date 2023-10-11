@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Cookies from 'js-cookie'
 import { host } from './host'
 
 const useFetchData = ({ refresh }) => {
@@ -9,7 +10,11 @@ const useFetchData = ({ refresh }) => {
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source()
-        const token = window.localStorage.getItem('token')
+        const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+        if (!user) {
+            window.location.reload()
+        }
         
         const url = `${host}/api/v1/data`;
         
@@ -21,7 +26,7 @@ const useFetchData = ({ refresh }) => {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Headers": "Content-Type, x-access-token",
                     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-                    "Authorization": "Bearer "+token,
+                    "Authorization": "Bearer "+user?.token,
                     "Content-Type": "application/json",
                 }
             },
@@ -40,6 +45,8 @@ const useFetchData = ({ refresh }) => {
             })
             .catch((err) => {
                 console.log(err);
+                setData({})
+                setChartSector([])
             }) 
             .finally(() => setLoading(false))
         }

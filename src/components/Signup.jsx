@@ -8,9 +8,9 @@ import { signupAPI } from '../hooks/functions'
 const Signup = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
   const navigate = useNavigate()
 
-  const [details, setDetails] = useState({ email: '', password: '', confirmPassword: '' })
+  const [details, setDetails] = useState({ email: '', username: '', password: '', confirmPassword: '' })
   const [hidePassword, setHidePassword] = useState({ password: true, confirm: true })
-  const [error, setError] = useState({ email: '', password: '', confirmPassword: '' })
+  const [error, setError] = useState({ email: '', username: '', password: '', confirmPassword: '' })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -25,12 +25,17 @@ const Signup = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
 
   const handleSignup = () => {
     const email = details.email.trim()
+    const username = details.username.trim()
     const password = details.password.trim()
     const confirmPassword = details.confirmPassword.trim()
-    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,12})+$/
+    const regexUsername = /^\S+$/
 
-    if (email === '' || !regex.test(email)) {
+    if (email === '' || !regexEmail.test(email)) {
       setError(p => {return{...p, email: 'Please input email correctly.'}})
+    }
+    if (username === '' || !regexUsername.test(username)) {
+      setError(p => {return{...p, username: 'Please input username without any spaces in-between.'}})
     }
     if (password === '' || password.length < 6 || password.length > 20) {
       setError(p => {return{...p, password: 'Password should be 6 to 20 characters long without any space in-between.'}})
@@ -38,7 +43,7 @@ const Signup = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
     if (password !== confirmPassword) {
       setError(p => {return{...p, confirmPassword: 'Passwords do not match.'}})
     }
-    if (email !== '' && regex.test(email) && password !== '' && password.length > 5 && password.length < 21 && password === confirmPassword) {
+    if (email !== '' && regexEmail.test(email) && username !== '' && regexUsername.test(username) && password !== '' && password.length > 5 && password.length < 21 && password === confirmPassword) {
       signupAPI({ setLoading, setError, details, setDetails, navigate, setLoginStatus })
     }
   }
@@ -56,6 +61,11 @@ const Signup = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
             <p className='text-slate-600'>Email:</p>
             <input type="email" placeholder='abc123@gmail.com' value={details.email} onKeyDown={e => (e.key === 'Enter') && handleSignup()} onChange={e => setDetails(p => {return{...p, email: e.target.value}})} className={`h-[50px] w-full bg-white border-2 ${(error.email === '') ? 'border-slate-300' : 'border-red-400'} rounded-md px-[5px] focus:outline-none`}/>
             {(error.email !== '') && (<p className='text-sm text-red-400'>{error.email}</p>)}
+          </div>
+          <div className='w-full max-w-[400px] flex flex-col'>
+            <p className='text-slate-600'>Username:</p>
+            <input type="text" placeholder='your username' value={details.username} onKeyDown={e => (e.key === 'Enter') && handleSignup()} onChange={e => setDetails(p => {return{...p, username: e.target.value}})} className={`h-[50px] w-full bg-white border-2 ${(error.username === '') ? 'border-slate-300' : 'border-red-400'} rounded-md px-[5px] focus:outline-none`}/>
+            {(error.username !== '') && (<p className='text-sm text-red-400'>{error.username}</p>)}
           </div>
           <div className='w-full max-w-[400px] flex flex-col'>
             <p className='text-slate-600'>Password:</p>

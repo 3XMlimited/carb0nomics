@@ -35,6 +35,12 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   }, [loginStatus.login])
 
   useEffect(() => {
+    if (loginStatus.plan === 'none') {
+      navigate('/pricing')
+    }
+  }, [loginStatus.plan])
+
+  useEffect(() => {
     let finding = categories.find(f => f.sector === formDetails.sector)
     if (finding) {
       setFormOptions(p => {return{...p, category: finding.categories.map(e => e.category)}})
@@ -326,7 +332,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                 )}
               </div>
               <div className='h-[500px] w-full'>
-                <ReactEChart option={footprintMixedChartOption} style={{height: '100%', width: '100%', minWidth: '420px'}}/>
+                <ReactEChart option={footprintMixedChartOption} showLoading={loading} style={{height: '100%', width: '100%', minWidth: '420px'}}/>
               </div>
             </div>
           </div>
@@ -336,7 +342,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-[500px] w-full'>
-                <ReactEChart option={emissionsPieChartOption} style={{height: '100%', width: '100%'}}/>
+                <ReactEChart option={emissionsPieChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
               </div>
             </div>
 
@@ -377,14 +383,16 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                       </div>
                     </div> 
                   ))
-                ) : (<></>)}
+                ) : (
+                  <p className='text-slate-500'>No Data yet</p>
+                )}
               </div>
             </div>
 
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
               <p className='font-medium'>Constituent Gases</p>
               <div className='h-[350px] w-full'>
-                <ReactEChart option={gasRadarChartOption} style={{height: '100%', width: '100%'}}/>
+                <ReactEChart option={gasRadarChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
               </div>
               <div className='h-fit w-full flex flex-col'>
                 <div className='w-full py-[5px] flex items-center justify-between text-sm border-b border-b-slate-300 gap-[5px]'>
@@ -450,7 +458,9 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                       </div>
                     </div> 
                   ))
-                ) : (<></>)}
+                ) : (
+                  <p className='text-slate-500'>No Data yet</p>
+                )}
               </div>
             </div>
           </div>
