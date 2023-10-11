@@ -20,6 +20,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
         } else {
             Cookies.remove('sessionID')
         }
+        
     }, [])
 
     // check login status
