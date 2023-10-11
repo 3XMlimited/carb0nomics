@@ -26,15 +26,8 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
     .then((response) => {
         const obj = response.data;
         if (obj.success) {
-            setDetails({ email: '', password: '' })
-            setError({ email: '', password: '' })
             Cookies.set('user', JSON.stringify(obj), { expires: 7 })
-            setLoginStatus(p => { return { ...p, login: true, plan: obj.plan }})
-            if (obj.plan === 'none') {
-                navigate('/pricing')
-            } else {
-                navigate('/dashboard')
-            }
+            checkLoginAPI({ setLoading, setError, setDetails, navigate, setLoginStatus })
         } else {
             setError({ email: 'Login Failed! Make sure your email is correct.', password: 'Login Failed! Make sure your password is correct.' })
         }
@@ -42,6 +35,37 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
     .catch((err) => {
         console.log(err);
         window.alert('Error! Please try again!')
+    })
+};
+
+const checkLoginAPI = ({ setLoading, setError, setDetails, navigate, setLoginStatus }) => {
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+    const url = `${host}/api/v1/auth/checkLogin`;
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+user?.token,
+        },
+    })
+    .then((response) => {
+        const obj = response.data;
+        if (obj.success) {
+            setDetails({ email: '', password: '' })
+            setError({ email: '', password: '' })
+            Cookies.set('user', JSON.stringify({ ...user, plan: obj.plan, endDate: obj.endDate, subscriptionID: obj.subscriptionID }), { expires: 7 })
+            setLoginStatus({ loading: false, login: true, plan: obj.plan })
+            if (obj.plan === 'none') {
+                navigate('/pricing')
+            } else {
+                navigate('/dashboard')
+            }
+        }
+    })
+    .catch((err) => {
+        console.log(err);
     })
     .finally(() => {
         setLoading(false)
@@ -520,8 +544,8 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 
         if (obj.session) {
             if (obj.session.url) {
-                window.open(obj.session.url, '_self')
                 Cookies.set('sessionID', obj.session.id)
+                window.open(obj.session.url, '_self')
             } else {
                 window.alert("Please try again. Can't get the payment link.")
             }
@@ -534,4 +558,58 @@ export const basicPaymentAPI = async ({ setLoading }) => {
         console.log(error);
         setLoading(false)
     }
+};
+
+// Stripe unsubscribe API
+export const unsubscribeAPI = async ({ setLoading, setLoginStatus }) => {
+    setLoading(true)
+    const url = `${host}/api/v1/payment/unsubscribe`;
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        window.location.reload()
+    }
+
+    // try {
+    //     const res = await fetch(url + new URLSearchParams({
+    //         subscriptionID : user?.subscriptionID
+    //     }))
+    
+    //     const obj = await res.json()
+
+    //     console.log(obj);
+    //     // if (obj.session) {
+    //     // } else {
+    //     //     window.alert("Please try again. Can't complete the process.")
+    //     // }
+        
+    //     setLoading(false)
+    // } catch (error) {
+    //     console.log(error);
+    //     setLoading(false)
+    // }
+
+    axios.get(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+user?.token,
+        },
+        params: { subscriptionID : user?.subscriptionID }
+    })
+    .then((response) => {
+        const obj = response.data
+        if (obj.success) {
+            window.alert("Successfully unsubscribed. You can enjoy our services until your end date.")
+        } else {
+            window.alert("You are already unsubscribed.")
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    .finally(() => {
+        setLoading(false)
+    })
 };

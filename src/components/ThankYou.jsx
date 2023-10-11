@@ -12,15 +12,12 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
 
     useEffect(() => {
         setCurrentRoute('thankyou')
-        
-        const sessionID = Cookies.get('sessionID') 
 
-        if (!sessionID) {
+        if (!Cookies.get('sessionID')) {
             navigate('/')   
         } else {
             Cookies.remove('sessionID')
         }
-        
     }, [])
 
     // check login status
@@ -43,7 +40,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
             .then((response) => {
                 const obj = response.data;
                 if (obj.success) {
-                    Cookies.set('user', JSON.stringify({ ...user, plan: obj.plan, expiryDate: obj.expiryDate }), { expires: 7 })
+                    Cookies.set('user', JSON.stringify({ ...user, plan: obj.plan, endDate: obj.endDate, subscriptionID: obj.subscriptionID }), { expires: 7 })
                     setLoginStatus({ loading: false, login: true, plan: obj.plan })
                 }
             })
@@ -70,7 +67,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
                     <p className='text-white text-[150px] text-center leading-normal xl:text-[120px] lg:text-[90px] md:text-[60px] sm:text-[40px]' style={{ fontFamily: 'Neonderthaw' }}>Thank You</p>
                     <p className='text-white text-center leading-normal sm:text-sm'>Your payment was successful.</p>
                     <p className='text-white text-center leading-normal mb-[30px] md:mb-[20px] sm:text-sm'>Let's walk towards a sustainable future together.</p>
-                    <button className='h-[50px] w-full max-w-[200px] font-semibold bg-emerald-400 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => navigate('/dashboard')}>
+                    <button className='h-[50px] w-full max-w-[200px] font-semibold bg-emerald-400 text-center flex items-center justify-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => navigate('/dashboard')}>
                         {loading ? (<div className='h-[30px] w-[30px] border-[5px] border-emerald-300 border-t-[5px] border-t-white rounded-full animate-spin'/>) : 'Go To Dashbaord'}
                     </button>
                 </div>

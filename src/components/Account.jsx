@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaCircleUser } from 'react-icons/fa6'
 import Cookies from 'js-cookie'
+import moment from 'moment'
+
+import { unsubscribeAPI } from '../hooks/functions'
 
 const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
   const navigate = useNavigate()
   const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setCurrentRoute('account')
@@ -27,11 +31,11 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
               <p className='text-xl text-center font-semibold leading-normal sm:text-base'>{user.username}</p>
             ) : (<></>)}
             {user.email ? (
-              <p className='text-center font-medium leading-normal sm:text-sm'>{user.email}</p>
+              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>Email:</span> {user.email}</p>
             ) : (<></>)}
             <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>Plan:</span> {loginStatus.plan}</p>
-            {(loginStatus.plan !== 'none') ? (
-              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>End Date:</span> {user.endDate}</p>
+            {(loginStatus.plan !== 'none' && user.endDate) ? (
+              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>End Date:</span> {moment(user.endDate).format('MMMM Do YYYY, hh:mm a')}</p>
             ) : (<></>)}
           </div>
           {(loginStatus.plan === 'none') ? (
@@ -43,7 +47,13 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
           ) : (
             <>
               <button className='h-[50px] w-full max-w-[300px] font-semibold bg-red-400 text-white text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {Cookies.remove('user'); setLoginStatus({ loading: false, login: false, plan: 'none' }); navigate('/');}}>Logout</button>
-              <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => ''}>Unsubscribe</button>
+              <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {
+                if (window.confirm('Do you really wanna unsubscribe?')) {
+                  unsubscribeAPI({ setLoading, setLoginStatus })
+                }
+              }}>
+                {loading ? (<div className='h-[30px] w-[30px] border-[5px] border-slate-50 border-t-[5px] border-t-slate-300 rounded-full animate-spin'/>) : 'Unsubscribe'}
+              </button>
             </>
           )}
         </div>
