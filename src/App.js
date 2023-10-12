@@ -28,6 +28,7 @@ function App() {
 
   useEffect(() => {
     const url = window.location.href
+    console.log(url);
     if (!url.includes('www.carb0nomics.com')) {
       window.open('https://www.carb0nomics.com/', '_self') 
     }
