@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
 import axios from 'axios'
 
 import { host } from '../hooks/host'
@@ -13,7 +12,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
     useEffect(() => {
         setCurrentRoute('thankyou')
 
-        if (!window.localStorage.getItem('sessionID')) {
+        if (window.localStorage.getItem('sessionID') !== 'carb0nomics2023') {
             navigate('/')
         } else {
             window.localStorage.removeItem('sessionID')
@@ -22,7 +21,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
 
     // check login status
     useEffect(() => {
-        const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+        const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
 
         const checkLoginAPI = () => {
             setLoading(true)
@@ -40,7 +39,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
             .then((response) => {
                 const obj = response.data;
                 if (obj.success) {
-                    Cookies.set('user', JSON.stringify({ ...user, plan: obj.plan, endDate: obj.endDate, subscriptionID: obj.subscriptionID }), { expires: 7 })
+                    window.localStorage.setItem('user', JSON.stringify({ ...user, plan: obj.plan, endDate: obj.endDate, subscriptionID: obj.subscriptionID }))
                     setLoginStatus({ loading: false, login: true, plan: obj.plan })
                 }
             })

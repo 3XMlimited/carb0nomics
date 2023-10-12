@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 import { host } from './hooks/host';
 import logo from './assets/logo.png'
@@ -29,7 +28,7 @@ function App() {
   
   // check login status
   useEffect(() => {
-    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
 
     const checkLoginAPI = () => {
       setLoginStatus(p => {return{...p, loading: true}})

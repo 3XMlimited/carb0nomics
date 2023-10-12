@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import Cookies from 'js-cookie'
 import { host } from './host'
 
 const useFetchData = ({ refresh }) => {
@@ -10,7 +9,7 @@ const useFetchData = ({ refresh }) => {
 
     useEffect(() => {
         const cancelToken = axios.CancelToken.source()
-        const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+        const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
 
         if (!user) {
             window.location.reload()
