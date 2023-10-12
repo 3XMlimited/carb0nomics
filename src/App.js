@@ -27,12 +27,12 @@ function App() {
   const [currentRoute, setCurrentRoute] = useState('home')
   const [loginStatus, setLoginStatus] = useState({ loading: true, login: false, plan: 'none' })
 
-  // useEffect(() => {
-  //   const url = window.location.href
-  //   if (!url.includes('www.carb0nomics.com')) {
-  //     window.open('https://www.carb0nomics.com/', '_self') 
-  //   }
-  // }, [])
+  useEffect(() => {
+    const url = window.location.href
+    if (!url.includes('www.carb0nomics.com')) {
+      window.open('https://www.carb0nomics.com/', '_self') 
+    }
+  }, [])
   
   // check login status
   useEffect(() => {
