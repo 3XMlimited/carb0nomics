@@ -544,7 +544,7 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 
         if (obj.session) {
             if (obj.session.url) {
-                Cookies.set('sessionID', obj.session.id)
+                window.localStorage.setItem('sessionID', obj.session.id)
                 window.open(obj.session.url, '_self')
             } else {
                 window.alert("Please try again. Can't get the payment link.")
@@ -569,25 +569,6 @@ export const unsubscribeAPI = async ({ setLoading, setLoginStatus }) => {
     if (!user) {
         window.location.reload()
     }
-
-    // try {
-    //     const res = await fetch(url + new URLSearchParams({
-    //         subscriptionID : user?.subscriptionID
-    //     }))
-    
-    //     const obj = await res.json()
-
-    //     console.log(obj);
-    //     // if (obj.session) {
-    //     // } else {
-    //     //     window.alert("Please try again. Can't complete the process.")
-    //     // }
-        
-    //     setLoading(false)
-    // } catch (error) {
-    //     console.log(error);
-    //     setLoading(false)
-    // }
 
     axios.get(url, {
         headers: {

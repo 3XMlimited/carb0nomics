@@ -13,10 +13,10 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
     useEffect(() => {
         setCurrentRoute('thankyou')
 
-        if (!Cookies.get('sessionID')) {
-            navigate('/')   
+        if (!window.localStorage.getItem('sessionID')) {
+            navigate('/')
         } else {
-            Cookies.remove('sessionID')
+            window.localStorage.removeItem('sessionID')
         }
     }, [])
 
