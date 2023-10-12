@@ -19,7 +19,7 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
     if (loginStatus.login === false) {
       navigate('/')
     }
-  }, [loginStatus.login])
+  }, [loginStatus.login, loginStatus.plan])
 
   return (
     <div className='relative h-fit min-h-[calc(100%-60px)] flex items-center justify-center'>
@@ -27,15 +27,15 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
         <div className='h-full w-full flex flex-col items-center justify-center p-[20px] gap-[20px]'>
           <FaCircleUser size={100}/>
           <div>
-            {user.username ? (
-              <p className='text-xl text-center font-semibold leading-normal sm:text-base'>{user.username}</p>
+            {user?.username ? (
+              <p className='text-xl text-center font-semibold leading-normal sm:text-base'>{user?.username}</p>
             ) : (<></>)}
-            {user.email ? (
-              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>Email:</span> {user.email}</p>
+            {user?.email ? (
+              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>Email:</span> {user?.email}</p>
             ) : (<></>)}
             <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>Plan:</span> {loginStatus.plan}</p>
-            {(loginStatus.plan !== 'none' && user.endDate) ? (
-              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>End Date:</span> {moment(user.endDate).format('MMMM Do YYYY, hh:mm a')}</p>
+            {(loginStatus.plan !== 'none' && user?.endDate) ? (
+              <p className='text-center font-medium leading-normal sm:text-sm'><span className='text-slate-500'>End Date:</span> {moment(user?.endDate).format('MMMM Do YYYY, hh:mm a')}</p>
             ) : (<></>)}
           </div>
           {(loginStatus.plan === 'none') ? (
@@ -50,7 +50,7 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
               {(loginStatus.plan !== 'none' && user?.hasSubs === true) ? (
                 <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {
                   if (window.confirm('Do you really wanna unsubscribe?')) {
-                    unsubscribeAPI({ setLoading })
+                    unsubscribeAPI({ setLoading, navigate })
                   }
                 }}>
                   {loading ? (<div className='h-[30px] w-[30px] border-[5px] border-slate-50 border-t-[5px] border-t-slate-300 rounded-full animate-spin'/>) : 'Unsubscribe'}

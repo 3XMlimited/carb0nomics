@@ -19,7 +19,7 @@ const Pricing = ({ setCurrentRoute, loginStatus }) => {
     }
 
     if (loginStatus.login) {
-      basicPaymentAPI({ setLoading })
+      basicPaymentAPI({ setLoading, navigate })
     } else {
       navigate('/login')
     } 

@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 import { host } from './host'
+import { useNavigate } from 'react-router-dom'
 
 const useFetchData = ({ refresh }) => {
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState({})
     const [chartSector, setChartSector] = useState([])
@@ -13,7 +15,7 @@ const useFetchData = ({ refresh }) => {
         const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
         if (!user) {
-            window.location.reload()
+            navigate('/')
         }
         
         const url = `${host}/api/v1/data`;

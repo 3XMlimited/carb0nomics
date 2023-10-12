@@ -27,14 +27,12 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
   useEffect(() => {
     if (loginStatus.login === false) {
       navigate('/')
+    } else {
+      if (loginStatus.plan === 'none') {
+        navigate('/pricing')
+      }
     }
-  }, [loginStatus.login])
-
-  useEffect(() => {
-    if (loginStatus.plan === 'none') {
-      navigate('/pricing')
-    }
-  }, [loginStatus.plan])
+  }, [loginStatus.login, loginStatus.plan])
 
   useEffect(() => {
     const final = []
@@ -199,14 +197,14 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
             <p className='text-sm'>Percent</p>
             <input value={reduction.percent} disabled={reductionLoading} type="number" placeholder='10' className={`h-[30px] w-full px-[5px] border-2 border-slate-300 rounded-md bg-white focus:outline-none focus-visible:border-slate-600 md:text-sm`}
                 onChange={e => setReduction({percent: e.target.value, number: ((cat.value*e.target.value)/100).toFixed(2)})}
-                onBlur={e => {(e.target.value) ? actionPlanAPI({ category: cat.name, percent: e.target.value*1, value: 0, setRefresh, setReductionLoading }) : actionPlanAPI({ category: cat.name, percent: 0, value: 0, setRefresh, setReductionLoading });} }
+                onBlur={e => {(e.target.value) ? actionPlanAPI({ category: cat.name, percent: e.target.value*1, value: 0, setRefresh, setReductionLoading, navigate }) : actionPlanAPI({ category: cat.name, percent: 0, value: 0, setRefresh, setReductionLoading, navigate });} }
             />
         </div>
         <div>
             <p className='text-sm'>Value</p>
             <input value={reduction.number} disabled={reductionLoading} type="number" placeholder='10' className={`h-[30px] w-full px-[5px] border-2 border-slate-300 rounded-md bg-white focus:outline-none focus-visible:border-slate-600 md:text-sm`}
                 onChange={e => setReduction({percent: (100 - (cat.value - e.target.value)/cat.value*100).toFixed(2), number: e.target.value})}
-                onBlur={e => {(e.target.value) ? actionPlanAPI({ category: cat.name, percent: 0, value: e.target.value*1, setRefresh, setReductionLoading }) : actionPlanAPI({ category: cat.name, percent: 0, value: 0, setRefresh, setReductionLoading });} }
+                onBlur={e => {(e.target.value) ? actionPlanAPI({ category: cat.name, percent: 0, value: e.target.value*1, setRefresh, setReductionLoading, navigate }) : actionPlanAPI({ category: cat.name, percent: 0, value: 0, setRefresh, setReductionLoading, navigate });} }
             />
         </div>
     </div>
@@ -255,14 +253,14 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
                                 <p className='text-sm'>Percent</p>
                                 <input value={totalReduction.percent} disabled={reductionLoading} type="number" placeholder='10' className={`h-[30px] w-full px-[5px] border-2 border-slate-300 rounded-md bg-white focus:outline-none focus-visible:border-slate-600 md:text-sm`}
                                     onChange={e => setTotalReduction({percent: e.target.value, number: ((totalEmission*e.target.value)/100).toFixed(2)})}
-                                    onBlur={e => {(e.target.value) ? actionPlanAPI({ category: 'Total', percent: e.target.value*1, value: 0, setRefresh, setReductionLoading }) : actionPlanAPI({ category: 'Total', percent: 0, value: 0, setRefresh, setReductionLoading });} }
+                                    onBlur={e => {(e.target.value) ? actionPlanAPI({ category: 'Total', percent: e.target.value*1, value: 0, setRefresh, setReductionLoading, navigate }) : actionPlanAPI({ category: 'Total', percent: 0, value: 0, setRefresh, setReductionLoading , navigate});} }
                                 />
                             </div>
                             <div>
                                 <p className='text-sm'>Value</p>
                                 <input value={totalReduction.number} disabled={reductionLoading} type="number" placeholder='10' className={`h-[30px] w-full px-[5px] border-2 border-slate-300 rounded-md bg-white focus:outline-none focus-visible:border-slate-600 md:text-sm`}
                                     onChange={e => setTotalReduction({percent: (100 - (totalEmission - e.target.value)/totalEmission*100).toFixed(2), number: e.target.value})}
-                                    onBlur={e => {(e.target.value) ? actionPlanAPI({ category: 'Total', percent: 0, value: e.target.value*1, setRefresh, setReductionLoading }) : actionPlanAPI({ category: 'Total', percent: 0, value: 0, setRefresh, setReductionLoading });} }
+                                    onBlur={e => {(e.target.value) ? actionPlanAPI({ category: 'Total', percent: 0, value: e.target.value*1, setRefresh, setReductionLoading, navigate }) : actionPlanAPI({ category: 'Total', percent: 0, value: 0, setRefresh, setReductionLoading, navigate });} }
                                 />
                             </div>
                         </div>

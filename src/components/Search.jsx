@@ -26,20 +26,18 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
   useEffect(() => {
     if (loginStatus.login === false) {
       navigate('/')
+    } else {
+      if (loginStatus.plan === 'none') {
+        navigate('/pricing')
+      }
     }
-  }, [loginStatus.login])
-
-  useEffect(() => {
-    if (loginStatus.plan === 'none') {
-      navigate('/pricing')
-    }
-  }, [loginStatus.plan])
+  }, [loginStatus.login, loginStatus.plan])
 
   useEffect(() => {
     setForm('TSLA')
-    esgDataAPI({ setLoading, setData, symbol: 'TSLA', setError })
-    esgListDataAPI({ setLoading, setListData })
-    esgCompanyNameAPI({ setCompany, symbol: 'TSLA' })
+    esgDataAPI({ setLoading, setData, symbol: 'TSLA', setError, navigate })
+    esgListDataAPI({ setLoading, setListData, navigate })
+    esgCompanyNameAPI({ setCompany, symbol: 'TSLA', navigate })
   }, [])
 
   const chartOption = {
@@ -107,8 +105,8 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
     } else {
       setError('')
       setDisplayList(false)
-      esgDataAPI({ setLoading, setData, symbol: form, setError })
-      esgCompanyNameAPI({ setCompany, symbol: form })
+      esgDataAPI({ setLoading, setData, symbol: form, setError, navigate })
+      esgCompanyNameAPI({ setCompany, symbol: form, navigate })
     }
   }
 
@@ -253,7 +251,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
                 </div>
                 <div className='h-fit w-full grid grid-cols-2 gap-[10px] xxl:grid-cols-1'>
                   {listData.map((e, i) => (
-                    <div key={i} onClick={() => {setDisplayList(false); esgDataAPI({ setLoading, setData, symbol: e.symbol, setError }); esgCompanyNameAPI({ setCompany, symbol: e.symbol });}} className='h-full w-full p-[10px] border border-slate-200 rounded-lg flex gap-[10px] cursor-pointer duration-200 hover:opacity-50'>
+                    <div key={i} onClick={() => {setDisplayList(false); esgDataAPI({ setLoading, setData, symbol: e.symbol, setError, navigate }); esgCompanyNameAPI({ setCompany, symbol: e.symbol, navigate });}} className='h-full w-full p-[10px] border border-slate-200 rounded-lg flex gap-[10px] cursor-pointer duration-200 hover:opacity-50'>
                       <div className='h-full flex flex-col items-center justify-center px-[20px] md:px-[10px] sm:hidden'>
                         <p className='font-medium'>ESG</p>
                         <p className='text-3xl font-bold'>{e.esg ? Number(e.esg).toFixed(0) : '-'}</p>

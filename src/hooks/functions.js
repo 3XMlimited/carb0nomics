@@ -223,13 +223,13 @@ export const changePasswordAPI = ({ setLoading, setError, details, setDetails, s
 
 // DASHBOARD ***
 // Add emission data
-export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm}) => {
+export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm, navigate }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.post(url, {
@@ -261,13 +261,13 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetai
 };
 
 // Delete emission data
-export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
+export const deleteDataAPI = ({ setFormLoading, setRefresh, id, navigate }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.delete(url, {
@@ -294,13 +294,13 @@ export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
 };
 
 // Update emission data - first Delete
-export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit }) => {
+export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit, navigate }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.delete(url, {
@@ -362,13 +362,13 @@ const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetai
 
 // ACTION PLAN ***
 // Save to database
-export const actionPlanAPI = ({ category, percent, value, setRefresh, setReductionLoading }) => {
+export const actionPlanAPI = ({ category, percent, value, setRefresh, setReductionLoading, navigate }) => {
     setReductionLoading(true)
     const url = `${host}/api/v1/data/target`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.post(url, {
@@ -398,13 +398,13 @@ export const actionPlanAPI = ({ category, percent, value, setRefresh, setReducti
 
 // SEARCH ***
 // Get ESG Data
-export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
+export const esgDataAPI = ({ setLoading, setData, symbol, setError, navigate }) => {
     setLoading(true)
     const url = `${host}/api/v1/data/esgChart`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.post(url, {
@@ -441,12 +441,12 @@ export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
 };
 
 // Get ESG company name
-export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
+export const esgCompanyNameAPI = ({ setCompany, symbol, navigate }) => {
     const url = `${host}/api/v1/data/info`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.post(url, {
@@ -473,14 +473,14 @@ export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
 };
 
 // Get ESG Data - Top 21
-export const esgListDataAPI = async ({ setLoading, setListData }) => {
+export const esgListDataAPI = async ({ setLoading, setListData, navigate }) => {
     setLoading(true)
     let top = top30.map(e => { return { company: e.company, symbol: e.symbol } })
     const url = `${host}/api/v1/data/esgChart`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     await Promise.allSettled(top.map(async e => {
@@ -526,13 +526,13 @@ export const esgListDataAPI = async ({ setLoading, setListData }) => {
 
 // PRICING
 // Stripe payment API
-export const basicPaymentAPI = async ({ setLoading }) => {
+export const basicPaymentAPI = async ({ setLoading, navigate }) => {
     setLoading(true)
     const url = `${host}/api/v1/payment/monthly?` ;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     try {
@@ -561,13 +561,13 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 };
 
 // Stripe unsubscribe API
-export const unsubscribeAPI = async ({ setLoading }) => {
+export const unsubscribeAPI = async ({ setLoading, navigate }) => {
     setLoading(true)
     const url = `${host}/api/v1/payment/unsubscribe`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
-        window.location.reload()
+        navigate('/login')
     }
 
     axios.get(url, {

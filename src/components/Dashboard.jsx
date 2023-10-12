@@ -31,14 +31,12 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   useEffect(() => {
     if (loginStatus.login === false) {
       navigate('/')
+    } else {
+      if (loginStatus.plan === 'none') {
+        navigate('/pricing')
+      }
     }
-  }, [loginStatus.login])
-
-  useEffect(() => {
-    if (loginStatus.plan === 'none') {
-      navigate('/pricing')
-    }
-  }, [loginStatus.plan])
+  }, [loginStatus.login, loginStatus.plan])
 
   useEffect(() => {
     let finding = categories.find(f => f.sector === formDetails.sector)
@@ -188,7 +186,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       setError('Please fill up the whole form. Amount should be more than 0.')
     } else {
       setError('')
-      addDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm })
+      addDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm, navigate })
     }
   }
 
@@ -198,7 +196,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       setError('Please fill up the whole form. Amount should be more than 0.')
     } else {
       setError('')
-      updateDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit })
+      updateDataAPI({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit, navigate })
     }
   }
 
@@ -373,7 +371,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                             <BiSolidEditAlt size={20} className='fill-green-500'/>
                           )}
                         </div>
-                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50' onClick={() => deleteDataAPI({ setFormLoading, setRefresh, id: e.id })}>
+                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50' onClick={() => deleteDataAPI({ setFormLoading, setRefresh, id: e.id, navigate })}>
                           {formLoading ? (
                             <div className='h-[30px] w-[30px] rounded-full border-[5px] border-red-100 border-t-[5px] border-t-white animate-spin'/>
                           ) : (
@@ -448,7 +446,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                             <BiSolidEditAlt size={20} className='fill-green-500'/>
                           )}
                         </div>
-                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50' onClick={() => deleteDataAPI({ setFormLoading, setRefresh, id: e.id })}>
+                        <div className='h-full w-full flex items-center justify-center bg-red-50 border border-red-100 rounded-md cursor-pointer hover:opacity-50' onClick={() => deleteDataAPI({ setFormLoading, setRefresh, id: e.id, navigate })}>
                           {formLoading ? (
                             <div className='h-[30px] w-[30px] rounded-full border-[5px] border-red-100 border-t-[5px] border-t-white animate-spin'/>
                           ) : (
