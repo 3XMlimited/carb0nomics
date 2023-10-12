@@ -12,7 +12,7 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
     useEffect(() => {
         setCurrentRoute('thankyou')
 
-        if (window.localStorage.getItem('sessionID') !== 'carb0nomics2023') {
+        if (!window.localStorage.getItem('sessionID')) {
             navigate('/')
         } else {
             window.localStorage.removeItem('sessionID')
@@ -39,8 +39,8 @@ const ThankYou = ({ setCurrentRoute, setLoginStatus }) => {
             .then((response) => {
                 const obj = response.data;
                 if (obj.success) {
-                    window.localStorage.setItem('user', JSON.stringify({ ...user, plan: obj.plan, endDate: obj.endDate, subscriptionID: obj.subscriptionID }))
-                    setLoginStatus({ loading: false, login: true, plan: obj.plan })
+                    window.localStorage.setItem('user', JSON.stringify({ ...user, plan: obj?.plan, endDate: obj?.endDate, subscriptionID: obj?.subscriptionID, hasSubs: obj?.hasSubs }))
+                    setLoginStatus({ loading: false, login: true, plan: obj?.plan })
                 }
             })
             .catch((err) => {

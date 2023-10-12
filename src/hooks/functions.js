@@ -54,8 +54,8 @@ const checkLoginAPI = ({ setLoading, setError, setDetails, navigate, setLoginSta
         if (obj.success) {
             setDetails({ email: '', password: '' })
             setError({ email: '', password: '' })
-            window.localStorage.setItem('user', JSON.stringify({ ...user, plan: obj.plan, endDate: obj.endDate, subscriptionID: obj.subscriptionID }))
-            setLoginStatus({ loading: false, login: true, plan: obj.plan })
+            window.localStorage.setItem('user', JSON.stringify({ ...user, plan: obj?.plan, endDate: obj?.endDate, subscriptionID: obj?.subscriptionID, hasSubs: obj?.hasSubs }))
+            setLoginStatus({ loading: false, login: true, plan: obj?.plan })
             if (obj.plan === 'none') {
                 navigate('/pricing')
             } else {
@@ -543,7 +543,7 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 
         if (obj.session) {
             if (obj.session.url) {
-                window.localStorage.setItem('sessionID', 'carb0nomics2023')
+                window.localStorage.setItem('sessionID', obj.session.id)
                 window.open(obj.session.url, '_self')
             } else {
                 window.alert("Please try again. Can't get the payment link.")
@@ -560,7 +560,7 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 };
 
 // Stripe unsubscribe API
-export const unsubscribeAPI = async ({ setLoading, setLoginStatus }) => {
+export const unsubscribeAPI = async ({ setLoading }) => {
     setLoading(true)
     const url = `${host}/api/v1/payment/unsubscribe`;
     const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
@@ -581,6 +581,7 @@ export const unsubscribeAPI = async ({ setLoading, setLoginStatus }) => {
     .then((response) => {
         const obj = response.data
         if (obj.success) {
+            window.localStorage.setItem('user', JSON.stringify({ ...user, hasSubs: false }))
             window.alert("Successfully unsubscribed. You can enjoy our services until your end date.")
         } else {
             window.alert("You are already unsubscribed.")

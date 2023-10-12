@@ -46,13 +46,15 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
           ) : (
             <>
               <button className='h-[50px] w-full max-w-[300px] font-semibold bg-red-400 text-white text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {window.localStorage.clear(); setLoginStatus({ loading: false, login: false, plan: 'none' }); navigate('/');}}>Logout</button>
-              <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {
-                if (window.confirm('Do you really wanna unsubscribe?')) {
-                  unsubscribeAPI({ setLoading, setLoginStatus })
-                }
-              }}>
-                {loading ? (<div className='h-[30px] w-[30px] border-[5px] border-slate-50 border-t-[5px] border-t-slate-300 rounded-full animate-spin'/>) : 'Unsubscribe'}
-              </button>
+              {(loginStatus.plan !== 'none' && user?.hasSubs === true) ? (
+                <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {
+                  if (window.confirm('Do you really wanna unsubscribe?')) {
+                    unsubscribeAPI({ setLoading })
+                  }
+                }}>
+                  {loading ? (<div className='h-[30px] w-[30px] border-[5px] border-slate-50 border-t-[5px] border-t-slate-300 rounded-full animate-spin'/>) : 'Unsubscribe'}
+                </button>
+              ) : (<></>)}
             </>
           )}
         </div>

@@ -25,6 +25,13 @@ function App() {
   const navigate = useNavigate()
   const [currentRoute, setCurrentRoute] = useState('home')
   const [loginStatus, setLoginStatus] = useState({ loading: true, login: false, plan: 'none' })
+
+  useEffect(() => {
+    const url = window.location.href
+    if (!url.includes('www.carb0nomics.com')) {
+      window.open('https://www.carb0nomics.com/', '_self') 
+    }
+  }, [])
   
   // check login status
   useEffect(() => {
@@ -46,7 +53,7 @@ function App() {
       .then((response) => {
         const obj = response.data;
         if (obj.success) {
-          setLoginStatus({ loading: false, login: true, plan: obj.plan })
+          setLoginStatus({ loading: false, login: true, plan: obj?.plan })
         } else {
           setLoginStatus({ loading: false, login: false, plan: 'none' })
         }
