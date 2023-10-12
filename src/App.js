@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 import { host } from './hooks/host';
 import logo from './assets/logo.png'
@@ -26,17 +27,16 @@ function App() {
   const [currentRoute, setCurrentRoute] = useState('home')
   const [loginStatus, setLoginStatus] = useState({ loading: true, login: false, plan: 'none' })
 
-  useEffect(() => {
-    const url = window.location.href
-    console.log(url);
-    if (!url.includes('www.carb0nomics.com')) {
-      window.open('https://www.carb0nomics.com/', '_self') 
-    }
-  }, [])
+  // useEffect(() => {
+  //   const url = window.location.href
+  //   if (!url.includes('www.carb0nomics.com')) {
+  //     window.open('https://www.carb0nomics.com/', '_self') 
+  //   }
+  // }, [])
   
   // check login status
   useEffect(() => {
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     const checkLoginAPI = () => {
       setLoginStatus(p => {return{...p, loading: true}})

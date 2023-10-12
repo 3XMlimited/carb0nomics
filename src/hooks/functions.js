@@ -1,6 +1,7 @@
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
 import moment from "moment";
+import Cookies from "js-cookie";
 
 import { host } from "./host";
 import { top30 } from "../local";
@@ -25,7 +26,7 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
     .then((response) => {
         const obj = response.data;
         if (obj.success) {
-            window.localStorage.setItem('user', JSON.stringify(obj))
+            Cookies.set('user', JSON.stringify(obj), { expires: 7 })
             checkLoginAPI({ setLoading, setError, setDetails, navigate, setLoginStatus })
         } else {
             setError({ email: 'Login Failed! Make sure your email is correct.', password: 'Login Failed! Make sure your password is correct.' })
@@ -38,7 +39,7 @@ export const loginAPI = ({ setLoading, setError, details, setDetails, navigate, 
 };
 
 const checkLoginAPI = ({ setLoading, setError, setDetails, navigate, setLoginStatus }) => {
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
     const url = `${host}/api/v1/auth/checkLogin`;
 
     axios.post(url, {
@@ -54,7 +55,7 @@ const checkLoginAPI = ({ setLoading, setError, setDetails, navigate, setLoginSta
         if (obj.success) {
             setDetails({ email: '', password: '' })
             setError({ email: '', password: '' })
-            window.localStorage.setItem('user', JSON.stringify({ ...user, plan: obj?.plan, endDate: obj?.endDate, subscriptionID: obj?.subscriptionID, hasSubs: obj?.hasSubs }))
+            Cookies.set('user', JSON.stringify({ ...user, plan: obj?.plan, endDate: obj?.endDate, subscriptionID: obj?.subscriptionID, hasSubs: obj?.hasSubs }), { expires: 7 })
             setLoginStatus({ loading: false, login: true, plan: obj?.plan })
             if (obj.plan === 'none') {
                 navigate('/pricing')
@@ -121,7 +122,7 @@ const registerAPI = ({ setLoading, setError, details, setDetails, navigate, setL
         if (obj.success) {
             setDetails({ email: '', username: '', password: '', confirmPassword: '' })
             setError({ email: '', username: '', password: '', confirmPassword: '' })
-            window.localStorage.setItem('user', JSON.stringify({...obj, billingID: obj.customerID}))
+            Cookies.set('user', JSON.stringify({...obj, billingID: obj.customerID}), { expires: 7 })
             setLoginStatus(p => {return{...p, login: true, plan: 'none' }})
             navigate('/pricing')
         } else {
@@ -225,7 +226,7 @@ export const changePasswordAPI = ({ setLoading, setError, details, setDetails, s
 export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayForm}) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -263,7 +264,7 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetai
 export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -296,7 +297,7 @@ export const deleteDataAPI = ({ setFormLoading, setRefresh, id }) => {
 export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, userID, setDisplayFormEdit }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -325,7 +326,7 @@ export const updateDataAPI = ({ formDetails, setFormLoading, setError, setFormDe
 // Update emission data - then add again
 const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetails, setRefresh, setDisplayFormEdit }) => {
     const url = `${host}/api/v1/data`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     axios.post(url, {
         headers: {
@@ -364,7 +365,7 @@ const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetai
 export const actionPlanAPI = ({ category, percent, value, setRefresh, setReductionLoading }) => {
     setReductionLoading(true)
     const url = `${host}/api/v1/data/target`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -400,7 +401,7 @@ export const actionPlanAPI = ({ category, percent, value, setRefresh, setReducti
 export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
     setLoading(true)
     const url = `${host}/api/v1/data/esgChart`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -442,7 +443,7 @@ export const esgDataAPI = ({ setLoading, setData, symbol, setError }) => {
 // Get ESG company name
 export const esgCompanyNameAPI = ({ setCompany, symbol }) => {
     const url = `${host}/api/v1/data/info`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -476,7 +477,7 @@ export const esgListDataAPI = async ({ setLoading, setListData }) => {
     setLoading(true)
     let top = top30.map(e => { return { company: e.company, symbol: e.symbol } })
     const url = `${host}/api/v1/data/esgChart`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -528,7 +529,7 @@ export const esgListDataAPI = async ({ setLoading, setListData }) => {
 export const basicPaymentAPI = async ({ setLoading }) => {
     setLoading(true)
     const url = `${host}/api/v1/payment/monthly?` ;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -543,7 +544,7 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 
         if (obj.session) {
             if (obj.session.url) {
-                window.localStorage.setItem('sessionID', obj.session.id)
+                Cookies.set('sessionID', obj.session.id, { expires: 1 })
                 window.open(obj.session.url, '_self')
             } else {
                 window.alert("Please try again. Can't get the payment link.")
@@ -563,7 +564,7 @@ export const basicPaymentAPI = async ({ setLoading }) => {
 export const unsubscribeAPI = async ({ setLoading }) => {
     setLoading(true)
     const url = `${host}/api/v1/payment/unsubscribe`;
-    const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
 
     if (!user) {
         window.location.reload()
@@ -581,7 +582,7 @@ export const unsubscribeAPI = async ({ setLoading }) => {
     .then((response) => {
         const obj = response.data
         if (obj.success) {
-            window.localStorage.setItem('user', JSON.stringify({ ...user, hasSubs: false }))
+            Cookies.set('user', JSON.stringify({ ...user, hasSubs: false }), { expires: 7 })
             window.alert("Successfully unsubscribed. You can enjoy our services until your end date.")
         } else {
             window.alert("You are already unsubscribed.")

@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaCircleUser } from 'react-icons/fa6'
 import moment from 'moment'
+import Cookies from 'js-cookie'
 
 import { unsubscribeAPI } from '../hooks/functions'
 
 const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
   const navigate = useNavigate()
-  const user = window.localStorage.getItem('user') ? JSON.parse(window.localStorage.getItem('user')) : null
+  const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -41,11 +42,11 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
             <>
               <p className='max-w-[800px] text-center sm:text-sm'>We provide a Carbon Neutrality Platform packed with powerful tools and features powered by AI, displayed in beauty, focused on performance and simplicity; carrying the sole purpose of helping your business obtain <span className='font-semibold'>"Carbon Neutrality without any sacrifices"</span>.</p>
               <button className='h-[50px] w-full max-w-[300px] font-semibold text-black bg-emerald-400 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => navigate('/pricing')}>Explore Plans</button>
-              <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {window.localStorage.clear(); setLoginStatus({ loading: false, login: false, plan: 'none' }); navigate('/');}}>Logout</button>
+              <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {Cookies.remove('user'); setLoginStatus({ loading: false, login: false, plan: 'none' }); navigate('/');}}>Logout</button>
             </>
           ) : (
             <>
-              <button className='h-[50px] w-full max-w-[300px] font-semibold bg-red-400 text-white text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {window.localStorage.clear(); setLoginStatus({ loading: false, login: false, plan: 'none' }); navigate('/');}}>Logout</button>
+              <button className='h-[50px] w-full max-w-[300px] font-semibold bg-red-400 text-white text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {Cookies.remove('user'); setLoginStatus({ loading: false, login: false, plan: 'none' }); navigate('/');}}>Logout</button>
               {(loginStatus.plan !== 'none' && user?.hasSubs === true) ? (
                 <button className='h-fit w-fit text-slate-300 text-center rounded-full cursor-pointer duration-300 hover:opacity-50 sm:text-sm' onClick={() => {
                   if (window.confirm('Do you really wanna unsubscribe?')) {
