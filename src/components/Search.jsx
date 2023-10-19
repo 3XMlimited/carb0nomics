@@ -21,6 +21,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
 
   useEffect(() => {
     setCurrentRoute('search')
+    document.getElementById('global-container').scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   useEffect(() => {
@@ -149,12 +150,12 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
 
   return (
     <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-200 flex justify-center'>
-      <div className='h-fit w-full max-w-[1700px] p-[20px] flex flex-col gap-[20px]'>
-        <div className='h-fit w-full'>
+      <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
+        <div className='h-fit w-full md:px-[20px]'>
           <p className='text-lg font-semibold sm:text-base'>Environment, Social and Governance (ESG) Risk Ratings</p>
           <p className='text-slate-600 text-justify sm:text-sm'>Find out how sustainable company businesses are by observing their ESG Risk scores throughout the years.</p>
         </div>
-        <div className='h-fit w-full flex flex-col'>
+        <div className='h-fit w-full flex flex-col md:px-[20px]'>
           <p className='text-slate-600 sm:text-sm'>Enter company symbol to search</p>
           {(error !== '') && <p className='text-red-400 sm:text-sm'>{error}</p>}
           <div className='flex gap-[10px] sm:flex-col'>
@@ -167,28 +168,28 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
         <div className='h-fit w-full flex'>
           {/* individual with chart */}
           <div className={`${displayList ? 'scale-0 h-0 w-0 opacity-0' : 'scale-100 h-fit w-full opacity-100'} flex flex-col gap-[20px] origin-top-left duration-500`}>
-            <div className='h-fit w-full flex flex-col gap-[5px] p-[10px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+            <div className='h-fit w-full flex flex-col gap-[5px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
               <p className='font-medium'>ESG Risk Scores {data[data.length-1]?.timestamp ? '('+data[data.length-1].timestamp.split('/')[1]+' AD)' : ''}</p>
               <div className='h-fit w-full grid grid-cols-4 gap-[10px] text-slate-500 xl:grid-cols-2 md:grid-cols-1'>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Total ESG Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[60px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].esg).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].esg).toFixed(0) : '-'}</p>
                 </div>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Environment Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[60px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].environment).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].environment).toFixed(0) : '-'}</p>
                 </div>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Social Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[60px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].social).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].social).toFixed(0) : '-'}</p>
                 </div>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Governance Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[60px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].governance).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].governance).toFixed(0) : '-'}</p>
                 </div>
               </div>
             </div>
-            <div className='h-fit w-full flex flex-col gap-[5px] p-[10px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+            <div className='h-fit w-full flex flex-col gap-[5px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
               <div>
                 <p className='font-medium'>ESG Risk Scores History {company ? <span>of <span className='text-emerald-500'>{company}</span></span> : ''}</p>
                 <p className='text-slate-500'>These scores typically range from 0 to 100. The higher the score the better.</p>
@@ -200,9 +201,9 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
           </div>
 
           {/* top 21 list */}
-          <div className={`${displayList ? 'scale-100 h-fit w-full opacity-100' : 'scale-0 h-0 w-0 opacity-0'} ${loading ? 'animate-pulse' : ''} flex bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl origin-top-right duration-500`}>
+          <div className={`${displayList ? 'scale-100 h-fit w-full opacity-100' : 'scale-0 h-0 w-0 opacity-0'} ${loading ? 'animate-pulse' : ''} flex bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl origin-top-right duration-500 md:rounded-none`}>
             {loading ? (
-              <div className='h-fit w-full flex flex-col gap-[10px] p-[10px]'>
+              <div className='h-fit w-full flex flex-col gap-[10px] p-[20px]'>
                 <div className='flex flex-wrap items-center gap-[10px]'>
                   <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
                   <div className='h-[20px] w-[20px] border-4 border-emerald-100 border-y-4 border-y-emerald-400 rounded-full animate-spin'/>
@@ -240,7 +241,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
                 </div>
               </div>
             ) : (
-              <div className='h-fit w-full flex flex-col gap-[10px] p-[10px]'>
+              <div className='h-fit w-full flex flex-col gap-[10px] p-[20px]'>
                 <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
                 <div className='h-fit w-full flex items-center flex-wrap gap-[10px]'>
                   <p className='md:text-sm'>Sort By:</p>

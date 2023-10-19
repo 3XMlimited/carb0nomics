@@ -13,7 +13,7 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
     <div className={`sticky top-0 z-50 h-[60px] w-full bg-white justify-center ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful') ? 'hidden' : 'flex'} shadow-md`}>
       {loginStatus.login ? (
         <div className='relative h-full w-full max-w-[1700px] flex items-center justify-between px-[20px]'>
-          <div className='h-full flex items-center justify-center'>
+          <div className='h-full flex items-center justify-center cursor-pointer' onClick={() => (currentRoute !== 'home') && navigate('/')}>
             <img src={logo} alt="logo" className='h-full'/>
           </div>
 
@@ -60,7 +60,7 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
         </div>
       ) : (
         <div className='relative h-full w-full max-w-[1440px] flex items-center justify-between px-[20px]'>
-          <div className='h-full flex items-center justify-center'>
+          <div className='h-full flex items-center justify-center cursor-pointer' onClick={() => (currentRoute !== 'home') && navigate('/')}>
             <img src={logo} alt="logo" className='h-full'/>
           </div>
 

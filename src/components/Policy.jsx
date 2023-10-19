@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Fade } from 'react-awesome-reveal'
 
 import Footer from './Footer'
 
@@ -6,11 +7,13 @@ const Policy = ({ setCurrentRoute }) => {
 
   useEffect(() => {
     setCurrentRoute('policy')
+    document.getElementById('global-container').scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   return (
     <>
-      <div className='h-fit min-h-[calc(100%-60px)] w-full flex justify-center'>
+        <div className='h-fit min-h-[calc(100%-60px)] w-full flex justify-center'>
+            <Fade triggerOnce={true}>
                 <div className='h-fit w-full max-w-[1440px] p-[20px] flex flex-col items-start gap-[10px]'>
                     <h1 className='text-3xl font-semibold text-justify leading-normal sm:text-xl'>Privacy Policy</h1>
                     <p className='font-normal text-justify leading-normal sm:text-sm'>Last updated: September 27, 2023</p>
@@ -202,9 +205,11 @@ const Policy = ({ setCurrentRoute }) => {
                         <li>By email:  contact@3xm.asia</li>
                     </ul>
 
-                    </div>
-            </div>
-            <Footer/>
+                </div>
+            </Fade>
+        </div>
+        
+        <Footer/>
     </>
   )
 }

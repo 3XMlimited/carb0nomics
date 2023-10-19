@@ -83,7 +83,7 @@ function App() {
     )
   } else {
     return (
-      <div className='h-screen w-full bg-slate-100 text-base font-normal text-slate-800 overflow-y-scroll'>
+      <div id='global-container' className='h-screen w-full bg-slate-100 text-base font-normal text-slate-800 overflow-y-scroll'>
         <Navbar currentRoute={currentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>
         <Routes>
           <Route exact path='/' element={<Home setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>

@@ -8,6 +8,7 @@ const useFetchData = ({ refresh }) => {
     const navigate = useNavigate()
     const [loading, setLoading] = useState(true)
     const [data, setData] = useState({})
+    const [chartCF, setChartCF] = useState({ sectors: [], data: [] })
     const [chartSector, setChartSector] = useState([])
 
     useEffect(() => {
@@ -43,11 +44,50 @@ const useFetchData = ({ refresh }) => {
                     if (temp && temp.length > 0) {
                         setChartSector(temp.map(e => { return { name: e[0], value: Number(Number(e[1]).toFixed(0)) } }))
                     }
+                
+                    if (obj.by_date) {
+                        if (Array.isArray(obj.by_date) && obj.by_date.length > 0) {
+                            const filterWithValues = obj.by_date.map(e => {
+                                let temp = Object.keys(e).map((key) => [key, e[key]]).filter(f => f[0] !== 'date')
+                                return temp.filter(f => Number(f[1]) > 0)
+                            })
+            
+                            const changeToArrayOfObjects = filterWithValues.map(e => {
+                                let temp = []
+                                e.forEach(element => {
+                                    temp.push({ [element[0]] : element[1] })
+                                });
+                                return temp
+                            }).map(e => {
+                                let temp = {}
+            
+                                e.map(m => {
+                                    let key = Object.keys(m)[0]
+                                    let value = Object.values(m)[0]
+                                    temp = { ...temp, [key]: value }
+                                })
+            
+                                return temp
+                            })
+
+                            let sectors = []
+                            
+                            changeToArrayOfObjects.map(e => {
+                                Object.keys(e).map(m => sectors.push(m))
+                            })
+
+                            setChartCF({ sectors: Array.from(new Set (sectors)), data: changeToArrayOfObjects });
+                        }
+                        else {
+                            setChartCF({ sectors: [], data: [] })
+                        }
+                    }
                 }
             })
             .catch((err) => {
                 console.log(err);
                 setData({})
+                setChartCF({ sectors: [], data: [] })
                 setChartSector([])
             }) 
             .finally(() => setLoading(false))
@@ -60,7 +100,7 @@ const useFetchData = ({ refresh }) => {
         }
     }, [refresh])
 
-    return [loading, data, chartSector]
+    return [loading, data, chartCF, chartSector]
 }
 
 export default useFetchData

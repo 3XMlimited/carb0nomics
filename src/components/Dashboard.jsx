@@ -22,10 +22,11 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   const [userID, setUserID] = useState('')
   
   const fetch = useFetchData({ refresh })
-  const [loading, data, chartSector] = fetch
+  const [loading, data, chartCF, chartSector] = fetch
 
   useEffect(() => {
     setCurrentRoute('dashboard')
+    document.getElementById('global-container').scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   useEffect(() => {
@@ -89,8 +90,8 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
         type: 'value'
       }
     ],
-    series: (data.by_date && data.by_date.length > 0) ? (
-      Object.keys(data.by_date[0]).filter(f => f !== 'date').map(e => {
+    series: (chartCF.sectors.length > 0 && chartCF.data.length > 0) ? (
+      chartCF.sectors.map(e => {
         return {
           name: e,
           type: 'bar',
@@ -99,7 +100,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
           emphasis: {
             focus: 'series'
           },
-          data: data.by_date.map(m => Number(m[e]).toFixed(0))
+          data: chartCF.data.map(m => Number(m[e]).toFixed(0))
         }
       })
     ) : []
@@ -294,16 +295,16 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
       {/* dashboard */}
       <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-200 flex justify-center'>
-        <div className='h-fit w-full max-w-[1700px] p-[20px] flex flex-col gap-[20px]'>
+        <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
           {/* top */}
-          <div className='h-fit w-full flex items-center justify-between gap-[10px]'>
+          <div className='h-fit w-full flex items-center justify-between gap-[10px] md:px-[20px]'>
             <p className='text-xl font-semibold sm:text-base'>Dashboard</p>
             <button onClick={() => setDisplayForm(true)} className='h-[40px] w-fit bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50 sm:w-full md:h-[40px]'><FaPlus size={16}/>ADD</button>
           </div>
 
           {/* first bar chart */}
           <div className='h-fit w-full grid grid-cols-[300px_1fr] gap-[20px] xxl:grid-cols-1'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl xxl:h-fit'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl xxl:h-fit md:rounded-none'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-fit w-full grid grid-flow-row gap-[10px]'>
                 {(chartSector.length > 0) ? (
@@ -321,7 +322,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </div>
             </div>
 
-            <div className='h-fit w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
+            <div className='h-fit w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
               <div className='h-fit w-full flex items-center justify-between'>
                 {data?.by_gases?.co2e_total ? (
                   <p className='font-medium'>Carbon Footprint {'(' + (data.by_gases.co2e_total*1).toFixed(0) +' kg)'}</p>
@@ -337,14 +338,14 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
           {/* second bar chart */}
           <div className='h-fit w-full grid grid-cols-[400px_1fr_400px] gap-[20px] xxxl:grid-cols-2 lg:grid-cols-1'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-[500px] w-full'>
                 <ReactEChart option={emissionsPieChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
               </div>
             </div>
 
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar xxxl:hidden'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar xxxl:hidden md:rounded-none'>
               <p className='font-medium'>Scope emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
                 {data.data ? (
@@ -387,7 +388,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </div>
             </div>
 
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
               <p className='font-medium'>Constituent Gases</p>
               <div className='h-[350px] w-full'>
                 <ReactEChart option={gasRadarChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
@@ -419,7 +420,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
           {/* after max width chart */}
           <div className='h-fit w-full hidden gap-[20px] xxxl:grid'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
               <p className='font-medium'>Scope emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
                 {data.data ? (

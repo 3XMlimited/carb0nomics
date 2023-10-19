@@ -22,6 +22,7 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
 
   useEffect(() => {
     setCurrentRoute('actionplan')
+    document.getElementById('global-container').scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   useEffect(() => {
@@ -230,20 +231,20 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
 
   return (
     <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-200 flex justify-center'>
-        <div className='h-fit w-full max-w-[1700px] p-[20px] flex flex-col gap-[20px]'>
+        <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
             {/* top */}
-            <p className='text-xl font-semibold sm:text-base'>Action Plan</p>
+            <p className='text-xl font-semibold sm:text-base md:px-[20px]'>Action Plan</p>
 
             {/* first pie chart */}
             <div className='h-fit w-full grid grid-cols-2 gap-[20px] xxl:grid-cols-1'>
-                <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+                <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
                     <p className='font-medium'>Emissions by Category</p>
                     <div className='h-full w-full xxl:h-[500px]'>
-                        <ReactEChart option={emissionsPieChartOption} style={{height: '100%', width: '100%'}}/>
+                        <ReactEChart option={emissionsPieChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
                     </div>
                 </div>
 
-                <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+                <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
                     <p className='font-medium'>Total Emissions {(actionCategories.length > 0) ? '( ' + totalEmission.toFixed(0) + ' kg )' : ''}</p>
                     <p className='font-medium'>Reduction Goals</p>
                     <div className='h-[400px] w-full flex flex-col overflow-y-scroll fancy-scrollbar'>
@@ -276,19 +277,19 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
             {/* second pie chart */}
             {(data.target && data.target.length > 0) ? (
               <div className='h-fit w-full grid grid-cols-1 gap-[20px]'>
-                  <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl'>
+                  <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
                       <p className='font-medium'>Emissions after reductions {findTotalReduction() ? '( Total ' + findTotalReduction() + ' kg )' : ''}</p>
                       <div className='h-[500px] w-full'>
-                          <ReactEChart option={newEmissionsPieChartOption} style={{height: '100%', width: '100%'}}/>
+                          <ReactEChart option={newEmissionsPieChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
                       </div>
                   </div>
               </div>
             ) : (<></>)}
 
-            {/* after max width chart */}
+            {/* suggestions */}
             {(data.target && data.target.length > 0) ? (
               <div className='h-fit w-full grid gap-[20px]'>
-                  <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar'>
+                  <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
                       <p className='font-medium'>Suggestions to achieve your goals</p>
                       <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
                         {data.target.filter(f => f.category !== 'Total' && f.category !== undefined && f.category !== null).map((e, i) => {

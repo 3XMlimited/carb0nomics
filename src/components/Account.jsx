@@ -13,6 +13,7 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
 
   useEffect(() => {
     setCurrentRoute('account')
+    document.getElementById('global-container').scrollTo({ top: 0, behavior: "smooth" })
   }, [])
 
   useEffect(() => {
