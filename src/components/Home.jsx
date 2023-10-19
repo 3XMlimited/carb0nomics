@@ -114,8 +114,8 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
           <div className='h-fit w-full grid grid-cols-2 gap-[20px] xl:grid-cols-1 xl:gap-[40px]'>
             <div className='h-full w-full flex flex-col justify-center gap-[10px] xl:items-center'>
               <Fade direction='up' triggerOnce={true}>
-                <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Plan to achieve reduction goals</p>
-                <p className='mb-[10px] xl:text-center'>Carb0nomics provides you a platform to calculate reduction goals and is smart enough to provide you necessary suggestions to achieve those reduction goals faster without facing any disadvantages in your business.</p>
+                <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Smart Solutions for Sustainable Success</p>
+                <p className='mb-[10px] xl:text-center'>Carb0nomics empowers businesses with a comprehensive platform to calculate reduction goals. Our AI-driven recommendations ensure faster progress towards sustainability, maximizing benefits while minimizing any potential drawbacks.</p>
               </Fade>
             </div>
             <div className='h-full w-full flex items-center justify-center'>

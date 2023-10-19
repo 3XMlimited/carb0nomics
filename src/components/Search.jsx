@@ -192,7 +192,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
             <div className='h-fit w-full flex flex-col gap-[5px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
               <div>
                 <p className='font-medium'>ESG Risk Scores History {company ? <span>of <span className='text-emerald-500'>{company}</span></span> : ''}</p>
-                <p className='text-slate-500'>These scores typically range from 0 to 100. The higher the score the better.</p>
+                <p className='text-slate-500'>These scores typically range from 0 to 100. The lower the score the better.</p>
               </div>
               <div className='h-[400px] w-full overflow-y-scroll hide-scrollbar'>
                 <ReactEChart option={chartOption} showLoading={loading} style={{height: '100%', width: '100%', minWidth: '420px'}}/>
