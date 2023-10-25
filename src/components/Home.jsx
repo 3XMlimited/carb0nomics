@@ -147,7 +147,7 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
 
       {/* features */}
       <div className='h-fit w-full flex justify-center bg-slate-100'>
-        <div className='h-fit min-h-[600px] w-full max-w-[1200px] px-[20px] py-[80px] flex flex-col items-center justify-center gap-[40px] xl:py-[40px]'>
+        <div className='h-fit w-full max-w-[1200px] px-[20px] py-[80px] flex flex-col items-center justify-center gap-[40px] xl:py-[40px]'>
           <div>
             <Fade direction='left' triggerOnce={true}>
               <p className='text-4xl font-bold text-center mb-[10px] xxl:text-3xl sm:text-2xl'>Powerful Features</p>
@@ -163,16 +163,16 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
                 <p className='mb-[10px] xl:text-center'>Carb0nomics help you achieve your climate goals through accurate measurement. To give you the best experience, we have developed a system thats easy to use and provides beautiful graphical presentations to all of your data.</p>
               </Fade>
             </div>
-            <div className='h-full w-full flex items-center justify-center'>
+            <div className='h-fit w-full flex items-center justify-center'>
               <Fade direction='right' triggerOnce={true}>
-                <img src={dashboard} alt="dashboard" className='h-full max-h-[500px] w-full object-contain' />
+                <img src={dashboard} alt="dashboard" className='min-h-full w-full object-contain' />
               </Fade>
             </div>
           </div>
           <div className='h-fit w-full grid grid-cols-2 gap-[20px] xl:grid-cols-1 xl:gap-[40px]'>
-            <div className='h-full w-full flex items-center justify-center xl:order-2'>
+            <div className='h-fit w-full flex items-center justify-center xl:order-2'>
               <Fade direction='left' triggerOnce={true}>
-                <img src={search} alt="search" className='h-full max-h-[500px] w-full object-contain' />
+                <img src={search} alt="search" className='min-h-full w-full object-contain' />
               </Fade>
             </div>
             <div className='h-full w-full flex flex-col justify-center gap-[10px] xl:items-center xl:order-1'>
@@ -189,9 +189,9 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
                 <p className='mb-[10px] xl:text-center'>Carb0nomics empowers businesses with a comprehensive platform to calculate reduction goals. Our AI-driven recommendations ensure faster progress towards sustainability, maximizing benefits while minimizing any potential drawbacks.</p>
               </Fade>
             </div>
-            <div className='h-full w-full flex items-center justify-center'>
+            <div className='h-fit w-full flex items-center justify-center'>
               <Fade direction='right' triggerOnce={true}>
-                <img src={actionplan} alt="actionplan" className='h-full max-h-[500px] w-full object-contain' />
+                <img src={actionplan} alt="actionplan" className='min-h-full w-full object-contain' />
               </Fade>
             </div>
           </div>

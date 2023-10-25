@@ -306,16 +306,16 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
           <div className='h-[600px] w-full grid grid-cols-[300px_1fr] gap-[20px] xxl:grid-cols-1 xxl:h-fit'>
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl xxl:h-fit md:rounded-none'>
               <p className='font-medium'>Emissions by Sectors</p>
-              <div className='h-fit w-full grid grid-flow-row gap-[10px]'>
+              <div className='h-fit w-full grid grid-flow-row gap-[10px] xxl:flex xxl:flex-col'>
                 {(chartSector.length > 0) ? (
                   chartSector.map((e, i) => (
-                    <div className='h-full w-full flex items-center justify-between py-[10px] text-sm border-b border-b-slate-300 gap-[5px]' key={i}>
+                    <div className='h-full w-full flex items-center justify-between py-[10px] text-sm border-b border-b-slate-300 gap-[5px] xxl:h-fit' key={i}>
                       <p className='text-slate-500'>{e.name}</p>
                       <p className='font-semibold'>{Number(e.value).toFixed(0)}kg</p>
                     </div>
                   ))
                 ) : (
-                  <div className='h-full w-full flex items-center justify-between text-sm gap-[5px]'>
+                  <div className='h-full w-full flex items-center justify-between text-sm gap-[5px] xxl:h-fit'>
                     <p className='text-slate-500'>No Data yet</p>
                   </div>
                 )}
