@@ -1,20 +1,33 @@
 {
   "files": {
-    "main.css": "/static/css/main.388a12e2.css",
-    "main.js": "/static/js/main.7ab88316.js",
+    "main.css": "/static/css/main.80f1f2f4.css",
+    "main.js": "/static/js/main.6aff8a8f.js",
     "static/media/thankyouBG.jpg": "/static/media/thankyouBG.6e50c85b07dbd059dd3e.jpg",
     "static/media/about.jpg": "/static/media/about.30ecee40442678184714.jpg",
-    "static/media/dashboard.png": "/static/media/dashboard.4c442f89f009c93673c5.png",
+    "static/media/epa.png": "/static/media/epa.9caef4388d0704e70a55.png",
     "static/media/logo.png": "/static/media/logo.b24aeafb803abaa4e739.png",
-    "static/media/search.png": "/static/media/search.e8fe4f11aaadc0800788.png",
+    "static/media/dashboard.png": "/static/media/dashboard.8c826e21c2e8693aef7f.png",
+    "static/media/actionplan.png": "/static/media/actionplan.c35992f1b636b49fccc3.png",
     "static/media/contact.png": "/static/media/contact.c4d5b2934b8443c43f6b.png",
-    "static/media/actionplan.png": "/static/media/actionplan.1b48380f45500d0f5c76.png",
+    "static/media/search.png": "/static/media/search.5da0ba79d0e5a4ede357.png",
+    "static/media/beis.png": "/static/media/beis.fe216b701895e51773fd.png",
+    "static/media/glec.png": "/static/media/glec.458f6cb144f7ba8f42b6.png",
+    "static/media/gem.png": "/static/media/gem.f3ef58f621bfbde91956.png",
+    "static/media/ghgProtocol.png": "/static/media/ghgProtocol.5dca527eba75b4664b5f.png",
+    "static/media/unfccc.png": "/static/media/unfccc.d3a4b710f7f999fbbbd4.png",
+    "static/media/vcs.png": "/static/media/vcs.4c427e454417e99b181b.png",
+    "static/media/exiobase.png": "/static/media/exiobase.80862810ae68cc5dc930.png",
+    "static/media/ucr.png": "/static/media/ucr.770cf4be848c64cfc540.png",
+    "static/media/westpac.png": "/static/media/westpac.62522283bc5307e8d2d1.png",
+    "static/media/goldStandard.png": "/static/media/goldStandard.8bda2adf077918631111.png",
+    "static/media/globalCarbon.jpg": "/static/media/globalCarbon.5d0f8a28029d1662b9c5.jpg",
+    "static/media/bioCarbon.png": "/static/media/bioCarbon.ab44ec12fea0bcd3270a.png",
     "index.html": "/index.html",
-    "main.388a12e2.css.map": "/static/css/main.388a12e2.css.map",
-    "main.7ab88316.js.map": "/static/js/main.7ab88316.js.map"
+    "main.80f1f2f4.css.map": "/static/css/main.80f1f2f4.css.map",
+    "main.6aff8a8f.js.map": "/static/js/main.6aff8a8f.js.map"
   },
   "entrypoints": [
-    "static/css/main.388a12e2.css",
-    "static/js/main.7ab88316.js"
+    "static/css/main.80f1f2f4.css",
+    "static/js/main.6aff8a8f.js"
   ]
 }

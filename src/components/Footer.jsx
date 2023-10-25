@@ -8,9 +8,9 @@ const Footer = () => {
   const navigate = useNavigate()
 
   return (
-    <div className='h-fit w-full flex justify-center bg-slate-100'>
-        <div className='h-fit min-h-[100px] w-full max-w-[1024px] px-[20px] py-[20px] flex flex-col items-center justify-center gap-[20px] border-t-2 border-t-slate-300'>
-          <div className='h-fit w-full grid grid-cols-2 pb-[20px] gap-[20px] border-b border-b-slate-300 lg:grid-cols-1'>
+    <div className='h-fit w-full flex justify-center bg-slate-50'>
+        <div className='h-fit min-h-[100px] w-full max-w-[1024px] px-[20px] py-[20px] flex flex-col items-center justify-center gap-[20px] border-t-2 border-t-slate-200'>
+          <div className='h-fit w-full grid grid-cols-2 pb-[20px] gap-[20px] border-b border-b-slate-200 lg:grid-cols-1'>
             <div className='h-fit w-full flex flex-col gap-[10px]'>
               <Fade direction='up' triggerOnce={true}>
                 <div className='flex items-center'>

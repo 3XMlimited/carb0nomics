@@ -294,7 +294,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
       </div>
 
       {/* dashboard */}
-      <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-200 flex justify-center'>
+      <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-100 flex justify-center'>
         <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
           {/* top */}
           <div className='h-fit w-full flex items-center justify-between gap-[10px] md:px-[20px]'>
@@ -304,7 +304,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
           {/* first bar chart */}
           <div className='h-fit w-full grid grid-cols-[300px_1fr] gap-[20px] xxl:grid-cols-1'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl xxl:h-fit md:rounded-none'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl xxl:h-fit md:rounded-none'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-fit w-full grid grid-flow-row gap-[10px]'>
                 {(chartSector.length > 0) ? (
@@ -322,7 +322,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </div>
             </div>
 
-            <div className='h-fit w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
+            <div className='h-fit w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
               <div className='h-fit w-full flex items-center justify-between'>
                 {data?.by_gases?.co2e_total ? (
                   <p className='font-medium'>Carbon Footprint {'(' + (data.by_gases.co2e_total*1).toFixed(0) +' kg)'}</p>
@@ -338,14 +338,14 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
           {/* second bar chart */}
           <div className='h-fit w-full grid grid-cols-[400px_1fr_400px] gap-[20px] xxxl:grid-cols-2 lg:grid-cols-1'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl md:rounded-none'>
               <p className='font-medium'>Emissions by Sectors</p>
               <div className='h-[500px] w-full'>
                 <ReactEChart option={emissionsPieChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
               </div>
             </div>
 
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar xxxl:hidden md:rounded-none'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl overflow-y-scroll hide-scrollbar xxxl:hidden md:rounded-none'>
               <p className='font-medium'>Scope emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
                 {data.data ? (
@@ -355,7 +355,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                         <p className='text-base leading-tight'>{e.category} <span className='text-sm text-slate-500'>"{e.sector}"</span> <span className='text-sm text-slate-500 font-semibold'>{'('}{moment(e.date).format('MMMM YYYY')}{')'}</span></p>
                         <div className='w-full grid grid-cols-2'>
                           <div className='h-fit w-full flex flex-col'>
-                            <p className='text-slate-500'>Category</p>
+                            <p className='text-slate-500'>Amount</p>
                             <p className='text-base font-semibold'>{Number(e.activity_data.activity_value).toFixed(0)} {e.activity_data.activity_unit}</p>
                           </div>
                           <div className='h-fit w-full flex flex-col'>
@@ -388,7 +388,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </div>
             </div>
 
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl md:rounded-none'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl md:rounded-none'>
               <p className='font-medium'>Constituent Gases</p>
               <div className='h-[350px] w-full'>
                 <ReactEChart option={gasRadarChartOption} showLoading={loading} style={{height: '100%', width: '100%'}}/>
@@ -420,7 +420,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
 
           {/* after max width chart */}
           <div className='h-fit w-full hidden gap-[20px] xxxl:grid'>
-            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white border border-slate-300 shadow-[0px_0px_5px_0px_#cbd5e1] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
+            <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl overflow-y-scroll hide-scrollbar md:rounded-none'>
               <p className='font-medium'>Scope emissions by each</p>
               <div className='h-full max-h-[500px] w-full flex flex-col gap-[10px] overflow-y-scroll fancy-scrollbar'>
                 {data.data ? (

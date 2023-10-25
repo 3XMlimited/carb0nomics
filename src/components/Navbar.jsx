@@ -10,7 +10,7 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
   const [displayMenu, setDisplayMenu] = useState(false)
 
   return (
-    <div className={`sticky top-0 z-50 h-[60px] w-full bg-white justify-center ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful') ? 'hidden' : 'flex'} shadow-md`}>
+    <div className={`sticky top-0 z-50 h-[80px] w-full bg-white justify-center ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful') ? 'hidden' : 'flex'} shadow-md shadow-slate-200 mobile:h-[60px]`}>
       {loginStatus.login ? (
         <div className='relative h-full w-full max-w-[1700px] flex items-center justify-between px-[20px]'>
           <div className='h-full flex items-center justify-center cursor-pointer' onClick={() => (currentRoute !== 'home') && navigate('/')}>
@@ -59,7 +59,7 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
           </div>
         </div>
       ) : (
-        <div className='relative h-full w-full max-w-[1440px] flex items-center justify-between px-[20px]'>
+        <div className='relative h-full w-full max-w-[1200px] flex items-center justify-between px-[20px]'>
           <div className='h-full flex items-center justify-center cursor-pointer' onClick={() => (currentRoute !== 'home') && navigate('/')}>
             <img src={logo} alt="logo" className='h-full'/>
           </div>
