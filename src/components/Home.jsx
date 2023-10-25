@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FaSearch } from 'react-icons/fa'
+import { HiOutlineSearch } from 'react-icons/hi'
 import { PiChartLineDownLight } from 'react-icons/pi'
 import { ImCalculator } from 'react-icons/im'
 import { Fade } from 'react-awesome-reveal'
@@ -33,7 +33,7 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
   }, [])
   
   return (
-    <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-100 flex flex-col'>
+    <div className='h-[calc(100%-80px)] min-h-fit w-full bg-slate-100 flex flex-col mobile:h-[calc(100%-60px)]'>
       {/* hero */}
       <div className='h-fit w-full flex justify-center bg-slate-100'>
         <div className='h-fit min-h-[600px] w-full max-w-[1200px] px-[20px] py-[80px] grid grid-cols-2 gap-[10px] xl:grid-cols-1 xl:gap-[40px] xl:py-[40px]'>
@@ -54,27 +54,27 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
 
       {/* about */}
       <div className='h-fit w-full flex justify-center bg-slate-50'>
-        <div className='h-fit min-h-[600px] w-full max-w-[1200px] px-[20px] py-[80px] flex flex-col items-center justify-center gap-[20px] xl:py-[40px]'>
+        <div className='h-fit min-h-[600px] w-full max-w-[1200px] px-[20px] py-[80px] flex flex-col items-center justify-center gap-[40px] xl:py-[40px]'>
           <Fade direction='up' triggerOnce={true}>
             <p className='text-4xl font-bold text-center xxl:text-3xl sm:text-2xl'>Carb0nomics is your all-in-one climate solution</p>
           </Fade>
           <div className='h-fit w-full max-w-[1100px] grid grid-cols-3 gap-[20px] lg:grid-cols-1'>
             <Fade direction='up' cascade={true} damping={0.2} triggerOnce={true}>
-              <div className='relative h-[400px] w-full p-[20px] bg-white border border-slate-200 rounded-xl flex flex-col items-center justify-center gap-[10px] overflow-hidden lg:h-[300px]'>
+              <div className='relative h-[400px] w-full p-[20px] bg-white border border-slate-200 rounded-xl flex flex-col items-center justify-center gap-[20px] overflow-hidden lg:h-[300px]'>
                 <div className='absolute h-[50px] w-[50px] top-0 left-0 flex items-center justify-center text-lg bg-slate-100 rounded-br-xl'>1</div>
-                <ImCalculator className='fill-emerald-400 text-[80px] sm:text-[60px]'/>
+                <ImCalculator color={'#34d399'} size={60}/>
                 <p className='text-2xl font-semibold text-center'>Calculate Footprint</p>
                 <p className='text-center'>Our AI calculates your carbon footprint better and quicker for you.</p>
               </div>
               <div className='relative h-[400px] w-full p-[20px] bg-white border border-slate-200 rounded-xl flex flex-col items-center justify-center gap-[10px] overflow-hidden lg:h-[300px]'>
                 <div className='absolute h-[50px] w-[50px] top-0 left-0 flex items-center justify-center text-lg bg-slate-100 rounded-br-xl'>2</div>
-                <PiChartLineDownLight className='fill-emerald-400 text-[80px] sm:text-[60px]'/>
+                <PiChartLineDownLight color={'#34d399'} size={60}/>
                 <p className='text-2xl font-semibold text-center'>Emissions Reduction Plan</p>
                 <p className='text-center'>Proactive reduction planning and simulations enable smarter decision-making.</p>
               </div>
               <div className='relative h-[400px] w-full p-[20px] bg-white border border-slate-200 rounded-xl flex flex-col items-center justify-center gap-[10px] overflow-hidden lg:h-[300px]'>
                 <div className='absolute h-[50px] w-[50px] top-0 left-0 flex items-center justify-center text-lg bg-slate-100 rounded-br-xl'>3</div>
-                <FaSearch className='fill-emerald-400 text-[80px] sm:text-[60px]'/>
+                <HiOutlineSearch color={'#34d399'} size={60}/>
                 <p className='text-2xl font-semibold text-center'>Find ESG Scores</p>
                 <p className='text-center'>Explore how other companies are performing all around the world.</p>
               </div>
@@ -93,18 +93,20 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
             </Fade>
           </div>
           <div className='h-full w-full grid grid-cols-2 gap-[10px] sm:grid-cols-1'>
-            <Fade direction='up' triggerOnce={true}>
-              <div className='h-fit w-full grid grid-rows-3 gap-[10px]'>
+            <div className='h-fit w-full grid grid-rows-3 gap-[10px]'>
+              <Fade direction='up' triggerOnce={true}>
                 <div className='h-[100px] w-full bg-white rounded-lg flex items-center justify-center py-[10px] px-[20px] sm:h-[80px]'><img src={ghgProtocol} alt="ghgProtocol" className='h-[80%] w-full max-w-[200px] object-contain' /></div>
                 <div className='h-[100px] w-full bg-white rounded-lg flex items-center justify-center py-[10px] px-[20px] sm:h-[80px]'><img src={exiobase} alt="exiobase" className='h-[80%] w-full max-w-[200px] object-contain' /></div>
                 <div className='h-[100px] w-full bg-white rounded-lg flex items-center justify-center py-[10px] px-[20px] sm:h-[80px]'><img src={ecoinvent} alt="ecoivent" className='h-[80%] w-full max-w-[200px] object-contain' /></div>
-              </div>
-              <div className='h-fit w-full grid grid-rows-3 gap-[10px]'>
+              </Fade>
+            </div>
+            <div className='h-fit w-full grid grid-rows-3 gap-[10px]'>
+              <Fade direction='up' triggerOnce={true}>
                 <div className='h-[100px] w-full bg-white rounded-lg flex items-center justify-center py-[10px] px-[20px] sm:h-[80px]'><img src={epa} alt="epa" className='h-[80%] w-full max-w-[200px] object-contain' /></div>
                 <div className='h-[100px] w-full bg-white rounded-lg flex items-center justify-center py-[10px] px-[20px] sm:h-[80px]'><img src={glec} alt="glec" className='h-[80%] w-full max-w-[200px] object-contain' /></div>
                 <div className='h-[100px] w-full bg-white rounded-lg flex items-center justify-center py-[10px] px-[20px] sm:h-[80px]'><img src={beis} alt="beis" className='h-[80%] w-full max-w-[200px] object-contain' /></div>
-              </div>
-            </Fade>
+              </Fade>
+            </div>
           </div>
         </div>
       </div>
@@ -147,32 +149,34 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
       <div className='h-fit w-full flex justify-center bg-slate-100'>
         <div className='h-fit min-h-[600px] w-full max-w-[1200px] px-[20px] py-[80px] flex flex-col items-center justify-center gap-[40px] xl:py-[40px]'>
           <div>
-            <Fade direction='up' triggerOnce={true}>
+            <Fade direction='left' triggerOnce={true}>
               <p className='text-4xl font-bold text-center mb-[10px] xxl:text-3xl sm:text-2xl'>Powerful Features</p>
+            </Fade>
+            <Fade direction='right' triggerOnce={true}>
               <p className='mb-[10px] text-center'>Carb0nomic is packed with features to back you up.</p>
             </Fade>
           </div>
           <div className='h-fit w-full grid grid-cols-2 gap-[20px] xl:grid-cols-1 xl:gap-[40px]'>
             <div className='h-full w-full flex flex-col justify-center gap-[10px] xl:items-center'>
-              <Fade direction='up' triggerOnce={true}>
+              <Fade direction='left' triggerOnce={true}>
                 <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Accurate emissions measurement</p>
                 <p className='mb-[10px] xl:text-center'>Carb0nomics help you achieve your climate goals through accurate measurement. To give you the best experience, we have developed a system thats easy to use and provides beautiful graphical presentations to all of your data.</p>
               </Fade>
             </div>
             <div className='h-full w-full flex items-center justify-center'>
-              <Fade direction='up' triggerOnce={true}>
-                <img src={dashboard} alt="dashboard" className='w-full' />
+              <Fade direction='right' triggerOnce={true}>
+                <img src={dashboard} alt="dashboard" className='h-full max-h-[500px] w-full object-contain' />
               </Fade>
             </div>
           </div>
           <div className='h-fit w-full grid grid-cols-2 gap-[20px] xl:grid-cols-1 xl:gap-[40px]'>
             <div className='h-full w-full flex items-center justify-center xl:order-2'>
-              <Fade direction='up' triggerOnce={true}>
-                <img src={search} alt="search" className='w-full' />
+              <Fade direction='left' triggerOnce={true}>
+                <img src={search} alt="search" className='h-full max-h-[500px] w-full object-contain' />
               </Fade>
             </div>
             <div className='h-full w-full flex flex-col justify-center gap-[10px] xl:items-center xl:order-1'>
-              <Fade direction='up' triggerOnce={true}>
+              <Fade direction='right' triggerOnce={true}>
                 <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Explore ESG risk scores</p>
                 <p className='mb-[10px] xl:text-center'>Carb0nomics provides you a powerful search engine to explore how other companies are performing all around the world throughout the years; in a beautiful yet powerful presentation.</p>
               </Fade>
@@ -180,14 +184,14 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
           </div>
           <div className='h-fit w-full grid grid-cols-2 gap-[20px] xl:grid-cols-1 xl:gap-[40px]'>
             <div className='h-full w-full flex flex-col justify-center gap-[10px] xl:items-center'>
-              <Fade direction='up' triggerOnce={true}>
+              <Fade direction='left' triggerOnce={true}>
                 <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Smart Solutions for Sustainable Success</p>
                 <p className='mb-[10px] xl:text-center'>Carb0nomics empowers businesses with a comprehensive platform to calculate reduction goals. Our AI-driven recommendations ensure faster progress towards sustainability, maximizing benefits while minimizing any potential drawbacks.</p>
               </Fade>
             </div>
             <div className='h-full w-full flex items-center justify-center'>
-              <Fade direction='up' triggerOnce={true}>
-                <img src={actionplan} alt="actionplan" className='w-full' />
+              <Fade direction='right' triggerOnce={true}>
+                <img src={actionplan} alt="actionplan" className='h-full max-h-[500px] w-full object-contain' />
               </Fade>
             </div>
           </div>

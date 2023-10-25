@@ -149,7 +149,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
   }
 
   return (
-    <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-100 flex justify-center'>
+    <div className='h-fit min-h-[calc(100%-80px)] w-full bg-slate-100 flex justify-center mobile:min-h-[calc(100%-60px)]'>
       <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
         <div className='h-fit w-full md:px-[20px]'>
           <p className='text-lg font-semibold sm:text-base'>Environment, Social and Governance (ESG) Risk Ratings</p>

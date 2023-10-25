@@ -29,7 +29,7 @@ const Pricing = ({ setCurrentRoute, loginStatus }) => {
 
   return (
     <>
-      <div className='h-fit min-h-[calc(100%-60px)] w-full flex items-center justify-center'>
+      <div className='h-fit min-h-[calc(100%-80px)] w-full flex items-center justify-center mobile:min-h-[calc(100%-60px)]'>
         <div className='h-fit w-full max-w-[900px] px-[20px] py-[40px] grid items-center justify-center gap-[40px]'>
           <div>
             <Fade direction='up' triggerOnce={true}>

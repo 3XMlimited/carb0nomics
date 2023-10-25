@@ -21,7 +21,7 @@ const Contact = ({ setCurrentRoute }) => {
 
   return (
     <>
-      <div className='h-fit min-h-[calc(100%-60px)] flex items-center justify-center'>
+      <div className='h-fit min-h-[calc(100%-80px)] flex items-center justify-center mobile:min-h-[calc(100%-60px)]'>
         <div className='h-fit w-full max-w-[1024px] grid grid-cols-2 md:grid-cols-1'>
           <div className='h-full w-full p-[20px] flex flex-col justify-center gap-[10px]'>
             <Fade direction='up' triggerOnce={true} cascade={true} damping={0.1}>

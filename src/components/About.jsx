@@ -14,7 +14,7 @@ const About = ({ setCurrentRoute, loginStatus }) => {
   }, [])
 
   return (
-    <div className='relative h-[calc(100%-60px)] min-h-fit w-full bg-slate-100 flex flex-col px-[20px] py-[40px] gap-[80px]'>
+    <div className='relative h-[calc(100%-80px)] min-h-fit w-full bg-slate-100 flex flex-col px-[20px] py-[40px] gap-[80px] mobile:h-[calc(100%-60px)]'>
       {/* hero */}
       <div className='h-fit w-full flex justify-center bg-slate-100'>
         <div className='h-fit w-full flex flex-col items-center gap-[40px]'>

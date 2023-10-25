@@ -230,7 +230,7 @@ const ActionPlan = ({ setCurrentRoute, loginStatus }) => {
   }
 
   return (
-    <div className='h-fit min-h-[calc(100%-60px)] w-full bg-slate-100 flex justify-center'>
+    <div className='h-fit min-h-[calc(100%-80px)] w-full bg-slate-100 flex justify-center mobile:min-h-[calc(100%-60px)]'>
         <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
             {/* top */}
             <p className='text-xl font-semibold sm:text-base md:px-[20px]'>Action Plan</p>

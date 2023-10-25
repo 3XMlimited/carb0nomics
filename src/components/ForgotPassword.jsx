@@ -56,7 +56,7 @@ const ForgotPassword = ({ setCurrentRoute, loginStatus }) => {
 
   return (
     <>
-      <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-100 grid items-center'>
+      <div className='h-[calc(100%-80px)] min-h-fit w-full bg-slate-100 grid items-center mobile:h-[calc(100%-60px)]'>
         {displayChange ? (
           <div className='h-fit w-full p-[20px] flex flex-col gap-[20px] items-center'>
             <Fade direction='up' cascade={true} damping={0.1} triggerOnce={true} className='w-full max-w-[400px]'>

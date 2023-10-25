@@ -23,7 +23,7 @@ const Account = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
   }, [loginStatus.login, loginStatus.plan])
 
   return (
-    <div className='relative h-fit min-h-[calc(100%-60px)] flex items-center justify-center'>
+    <div className='relative h-fit min-h-[calc(100%-80px)] flex items-center justify-center mobile:min-h-[calc(100%-60px)]'>
       <div className='z-10 h-fit w-full grid grid-cols-1'>
         <div className='h-full w-full flex flex-col items-center justify-center p-[20px] gap-[20px]'>
           <FaCircleUser size={100}/>

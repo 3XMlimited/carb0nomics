@@ -52,7 +52,7 @@ const Signup = ({ setCurrentRoute, loginStatus, setLoginStatus }) => {
 
   return (
     <>
-      <div className='h-[calc(100%-60px)] min-h-fit w-full bg-slate-100 grid items-center'>
+      <div className='h-[calc(100%-80px)] min-h-fit w-full bg-slate-100 grid items-center mobile:h-[calc(100%-60px)]'>
         <div className='h-fit w-full p-[20px] flex flex-col gap-[20px] items-center'>
           <Fade direction='up' triggerOnce={true}>
             <img src={logo} alt="logo" className='h-[100px]'/>
