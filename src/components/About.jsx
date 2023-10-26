@@ -14,9 +14,9 @@ const About = ({ setCurrentRoute, loginStatus }) => {
   }, [])
 
   return (
-    <div className='relative h-[calc(100%-80px)] min-h-fit w-full bg-slate-100 flex flex-col px-[20px] py-[40px] gap-[80px] mobile:h-[calc(100%-60px)]'>
+    <div className='relative h-fit min-h-[calc(100%-80px)] w-full bg-slate-50 flex flex-col px-[20px] pt-[40px] gap-[80px] mobile:min-h-[calc(100%-60px)]'>
       {/* hero */}
-      <div className='h-fit w-full flex justify-center bg-slate-100'>
+      <div className='h-fit w-full flex justify-center bg-slate-50'>
         <div className='h-fit w-full flex flex-col items-center gap-[40px]'>
           <Fade direction='up' triggerOnce={true}>
             <p className='text-4xl font-bold text-center xxl:text-3xl sm:text-2xl'>Carb0nomics walks towards to a carbon neutral future</p>
@@ -26,7 +26,7 @@ const About = ({ setCurrentRoute, loginStatus }) => {
       </div>
 
       {/* vision */}
-      <div className='h-fit w-full flex justify-center bg-slate-100'>
+      <div className='h-fit w-full flex justify-center bg-slate-50'>
         <div className='h-fit w-full max-w-[1024px] flex flex-col items-center gap-[20px]'>
           <Fade direction='up' triggerOnce={true}>
             <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Our Vision</p>
@@ -36,7 +36,7 @@ const About = ({ setCurrentRoute, loginStatus }) => {
       </div>
 
       {/* mission */}
-      <div className='h-fit w-full flex justify-center bg-slate-100'>
+      <div className='h-fit w-full flex justify-center bg-slate-50'>
         <div className='h-fit w-full max-w-[1024px] flex flex-col items-center gap-[20px]'>
           <Fade direction='up' triggerOnce={true}>
             <p className='text-4xl font-bold xxl:text-3xl xl:text-center sm:text-2xl'>Our Mission</p>

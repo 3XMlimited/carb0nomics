@@ -33,7 +33,7 @@ const Home = ({ setCurrentRoute, loginStatus }) => {
   }, [])
   
   return (
-    <div className='h-[calc(100%-80px)] min-h-fit w-full bg-slate-100 flex flex-col mobile:h-[calc(100%-60px)]'>
+    <div className='h-fit min-h-[calc(100%-80px)] w-full bg-slate-100 flex flex-col mobile:min-h-[calc(100%-60px)]'>
       {/* hero */}
       <div className='h-fit w-full flex justify-center bg-slate-100'>
         <div className='h-fit min-h-[600px] w-full max-w-[1200px] px-[20px] py-[80px] grid grid-cols-2 gap-[10px] xl:grid-cols-1 xl:gap-[40px] xl:py-[40px]'>

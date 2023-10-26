@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.1ac0579e.css",
-    "main.js": "/static/js/main.a850277a.js",
+    "main.css": "/static/css/main.d60a0d95.css",
+    "main.js": "/static/js/main.534a123b.js",
     "static/media/thankyouBG.jpg": "/static/media/thankyouBG.6e50c85b07dbd059dd3e.jpg",
     "static/media/about.jpg": "/static/media/about.30ecee40442678184714.jpg",
     "static/media/epa.png": "/static/media/epa.9caef4388d0704e70a55.png",
@@ -23,11 +23,11 @@
     "static/media/globalCarbon.jpg": "/static/media/globalCarbon.5d0f8a28029d1662b9c5.jpg",
     "static/media/bioCarbon.png": "/static/media/bioCarbon.ab44ec12fea0bcd3270a.png",
     "index.html": "/index.html",
-    "main.1ac0579e.css.map": "/static/css/main.1ac0579e.css.map",
-    "main.a850277a.js.map": "/static/js/main.a850277a.js.map"
+    "main.d60a0d95.css.map": "/static/css/main.d60a0d95.css.map",
+    "main.534a123b.js.map": "/static/js/main.534a123b.js.map"
   },
   "entrypoints": [
-    "static/css/main.1ac0579e.css",
-    "static/js/main.a850277a.js"
+    "static/css/main.d60a0d95.css",
+    "static/js/main.534a123b.js"
   ]
 }

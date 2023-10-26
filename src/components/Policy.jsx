@@ -12,7 +12,7 @@ const Policy = ({ setCurrentRoute }) => {
 
   return (
     <>
-        <div className='h-fit min-h-[calc(100%-80px)] w-full flex justify-center mobile:min-h-[calc(100%-60px)]'>
+        <div className='h-fit min-h-[calc(100%-80px)] w-full flex justify-center bg-slate-50 mobile:min-h-[calc(100%-60px)]'>
             <Fade triggerOnce={true}>
                 <div className='h-fit w-full max-w-[1440px] p-[20px] flex flex-col items-start gap-[10px]'>
                     <h1 className='text-3xl font-semibold text-justify leading-normal sm:text-xl'>Privacy Policy</h1>

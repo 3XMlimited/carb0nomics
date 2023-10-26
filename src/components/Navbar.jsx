@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiMenu } from 'react-icons/fi'
 import { FaCircleUser, FaChevronDown } from 'react-icons/fa6'
@@ -8,15 +8,41 @@ import logo from '../assets/logo.png'
 const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
   const navigate = useNavigate()
   const [displayMenu, setDisplayMenu] = useState(false)
+  const [expandMenu, setExpandMenu] = useState('')
+
+  useEffect(() => {
+    if (currentRoute === 'home' || currentRoute === 'about' || currentRoute === 'contact' || currentRoute === 'pricing') {
+      setExpandMenu('home')
+    } else if (currentRoute === 'dashboard' || currentRoute === 'actionplan' || currentRoute === 'search') {
+      setExpandMenu('dashboard')
+    } else {
+      setExpandMenu('')
+    }
+  }, [currentRoute])
+
+  const navCondition = (cr) => {
+    if (loginStatus.plan === 'none') {
+      if (currentRoute !== 'pricing') {
+        navigate('/pricing')
+      }
+      return
+    }
+    if (currentRoute !== cr) {
+      navigate(`/${cr}`)
+      return
+    }
+  }
 
   return (
-    <div className={`sticky top-0 z-50 h-[80px] w-full bg-white justify-center ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful') ? 'hidden' : 'flex'} shadow-md shadow-slate-200 mobile:h-[60px]`}>
+    <div className={`sticky top-0 z-50 h-[80px] w-full bg-white justify-center ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful') ? 'hidden' : 'flex'} shadow-[0px_2px_4px_#cdd4dc] mobile:h-[60px]`}>
       {loginStatus.login ? (
+        // navbar when logged in
         <div className='relative h-full w-full max-w-[1700px] flex items-center justify-between px-[20px]'>
           <div className='h-full flex items-center justify-center cursor-pointer' onClick={() => (currentRoute !== 'home') && navigate('/')}>
             <img src={logo} alt="logo" className='h-full'/>
           </div>
 
+          {/* big screen nav */}
           <div className='h-full flex items-center gap-[10px] md:hidden'>
             <div className={`relative group h-full flex items-center justify-center px-[10px] duration-200 cursor-pointer`}>
               <div className='flex items-center gap-[5px] font-semibold'>Home<FaChevronDown size={16}/></div>
@@ -30,9 +56,9 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
             <div className={`relative group h-full flex items-center justify-center px-[10px] duration-200 cursor-pointer`}>
               <div className='flex items-center gap-[5px] font-semibold'>Dashboard<FaChevronDown size={16}/></div>
               <div className='absolute top-full h-fit w-full min-w-[200px] bg-white flex flex-col p-[10px] gap-[10px] border-t border-t-slate-200 shadow-2xl rounded-b-md duration-100 origin-top scale-y-0 group-hover:scale-y-100'>
-                <div className={`w-full flex items-center justify-center font-semibold p-[10px] text-center border rounded-md ${(currentRoute === 'dashboard') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => (currentRoute !== 'dashboard') && navigate('/dashboard')}>Footprint Calculator</div>
-                <div className={`w-full flex items-center justify-center font-semibold p-[10px] text-center border rounded-md ${(currentRoute === 'actionplan') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => (currentRoute !== 'actionplan') && navigate('/actionplan')}>Action Plan</div>
-                <div className={`w-full flex items-center justify-center font-semibold p-[10px] text-center border rounded-md ${(currentRoute === 'search') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => (currentRoute !== 'search') && navigate('/search')}>ESG Scores Benchmark</div>
+                <div className={`w-full flex items-center justify-center font-semibold p-[10px] text-center border rounded-md ${(currentRoute === 'dashboard') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => navCondition('dashboard')}>Footprint Calculator</div>
+                <div className={`w-full flex items-center justify-center font-semibold p-[10px] text-center border rounded-md ${(currentRoute === 'actionplan') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => navCondition('actionplan')}>Action Plan</div>
+                <div className={`w-full flex items-center justify-center font-semibold p-[10px] text-center border rounded-md ${(currentRoute === 'search') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => navCondition('search')}>ESG Scores Benchmark</div>
               </div>
             </div>
             <div className={`h-full flex items-center justify-center px-[10px] cursor-pointer`} onClick={() => (currentRoute !== 'account') && navigate('/account')}><FaCircleUser size={30} className={`${(currentRoute === 'account') ? 'fill-emerald-400' : ''} duration-200 hover:fill-emerald-400`}/></div>
@@ -42,18 +68,27 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
             <FiMenu size={30}/>
           </div>
 
+          {/* small screen nav */}
           <div className={`absolute top-full left-0 h-[calc(100vh-60px)] w-full origin-top-right duration-200 hidden md:flex ${displayMenu ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
             <div className='h-fit max-h-full w-full bg-white flex flex-col gap-[10px] p-[20px] overflow-y-scroll hide-scrollbar'>
-              <div className='w-full flex items-center font-semibold gap-[5px]'>Home<FaChevronDown size={16}/></div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'home') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'home') && navigate('/'));}}>Home</div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'about') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'about') && navigate('/about'));}}>About Us</div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'contact') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'contact') && navigate('/contact'));}}>Contact Us</div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'pricing') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'pricing') && navigate('/pricing'));}}>Pricing</div>
-              <div className='w-full flex items-center font-semibold gap-[5px]'>Dashboard<FaChevronDown size={16}/></div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'dashboard') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'dashboard') && navigate('/dashboard'));}}>Footprint Calculator</div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'actionplan') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'actionplan') && navigate('/actionplan'));}}>Action Plan</div>
-              <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'search') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'search') && navigate('/search'));}}>ESG Scores Benchmark</div>
-              <div className='w-full flex items-center font-semibold gap-[5px]'>Account<FaChevronDown size={16}/></div>
+              <div className=' h-[40px] w-full flex items-center justify-between font-semibold gap-[5px] cursor-pointer' onClick={() => (expandMenu === 'home') ? setExpandMenu('') : setExpandMenu('home')}>Home<FaChevronDown size={16} className={`duration-200 ${(expandMenu === 'home') ? 'rotate-180' : 'rotate-0'}`}/></div>
+              {(expandMenu === 'home') ? (
+                <>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'home') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'home') && navigate('/'));}}>Home</div>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'about') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'about') && navigate('/about'));}}>About Us</div>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'contact') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'contact') && navigate('/contact'));}}>Contact Us</div>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'pricing') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'pricing') && navigate('/pricing'));}}>Pricing</div>
+                </>
+              ) : (<></>)}
+              <div className='h-[40px] w-full flex items-center justify-between font-semibold gap-[5px] cursor-pointer' onClick={() => (expandMenu === 'dashboard') ? setExpandMenu('') : setExpandMenu('dashboard')}>Dashboard<FaChevronDown size={16} className={`duration-200 ${(expandMenu === 'dashboard') ? 'rotate-180' : 'rotate-0'}`}/></div>
+              {(expandMenu === 'dashboard') ? (
+                <>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'dashboard') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); navCondition('dashboard');}}>Footprint Calculator</div>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'actionplan') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); navCondition('actionplan');}}>Action Plan</div>
+                  <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border ${(currentRoute === 'search') ? 'border-slate-600' : 'border-slate-200'} duration-200 cursor-pointer hover:border-slate-600`} onClick={() => {setDisplayMenu(!displayMenu); navCondition('search');}}>ESG Scores Benchmark</div>
+                </>
+              ) : (<></>)}
+              {/* <div className='w-full flex items-center font-semibold gap-[5px]'>Account<FaChevronDown size={16}/></div> */}
               <div className={`h-fit min-h-[50px] w-full flex items-center justify-center text-center font-semibold p-x-[10px] rounded-md border gap-[5px] border-emerald-400 ${(currentRoute === 'account') ? 'bg-emerald-400' : 'bg-emerald-50'} duration-200 cursor-pointer hover:bg-emerald-400`} onClick={() => {setDisplayMenu(!displayMenu); ((currentRoute !== 'account') && navigate('/account'));}}><FaCircleUser size={24} className={`duration-200`}/>Account</div>
             </div>
           </div>

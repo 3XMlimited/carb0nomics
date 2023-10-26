@@ -12,7 +12,7 @@ import useFetchData from '../hooks/useFetchData'
 
 const Dashboard = ({ setCurrentRoute, loginStatus }) => {
   const navigate = useNavigate()
-  const [formDetails, setFormDetails] = useState({ date: moment().format('YYYY-MM'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+  const [formDetails, setFormDetails] = useState({ date: moment().format('YYYY-MM-DD'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
   const [formOptions, setFormOptions] = useState({ sector: categories.map(e => e.sector), category: [], unit: [] })
   const [error, setError] = useState('')
   const [formLoading, setFormLoading] = useState(false)
@@ -238,7 +238,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </select>
             </div>
             <p className='text-slate-500'>Date:</p>
-            <input value={formDetails.date} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM')}})} type='month' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+            <input value={formDetails.date} onKeyDown={e => (e.key === 'Enter') && handleAdd()} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM-DD')}})} type='date' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
             <button onKeyDown={e => (e.key === 'Enter') && handleAdd()} onClick={() => handleAdd()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
               {formLoading ? (
                 <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
@@ -283,7 +283,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
               </select>
             </div>
             <p className='text-slate-500'>Date:</p>
-            <input value={formDetails.date} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM')}})} type='month' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
+            <input value={formDetails.date} onKeyDown={e => (e.key === 'Enter') && handleEdit()} onChange={e => setFormDetails(p => {return{...p, date: moment(e.target.value).format('YYYY-MM-DD')}})} type='date' className='h-[40px] w-full border border-slate-300 rounded-md px-[10px]'/>
             <button onKeyDown={e => (e.key === 'Enter') && handleEdit()} onClick={() => handleEdit()} disabled={formLoading} className='h-[40px] w-full bg-emerald-400 text-white font-semibold rounded-md cursor-pointer px-[10px] flex items-center justify-center mt-[10px] duration-200 hover:opacity-50 focus:outline-none focus-visible:opacity-50'>
               {formLoading ? (
                 <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
@@ -365,7 +365,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                         </div>
                       </div>
                       <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: moment(e.date).format('YYYY-MM'), sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: moment(e.date).format('YYYY-MM-DD'), sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
                           {formLoading ? (
                             <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
                           ) : (
@@ -387,7 +387,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                 )}
               </div>
             </div>
-
+            
             <div className='h-full w-full flex flex-col gap-[10px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl lg:h-[500px] md:rounded-none'>
               <p className='font-medium'>Constituent Gases</p>
               <div className='h-full w-full'>
@@ -440,7 +440,7 @@ const Dashboard = ({ setCurrentRoute, loginStatus }) => {
                         </div>
                       </div>
                       <div className='h-full w-full grid grid-rows-2 gap-[5px]'>
-                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: moment(e.date).format('YYYY-MM'), sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
+                        <div className='h-full w-full flex items-center justify-center bg-green-50 border border-green-200 rounded-md cursor-pointer hover:opacity-50' onClick={() => { setFormDetails({ date: moment(e.date).format('YYYY-MM-YY'), sector: e.sector, active_id: '', category: e.category, amount: e.activity_data.activity_value, unit: '', type: '' }); setDisplayFormEdit(true); setUserID(e.id); }}>
                           {formLoading ? (
                             <div className='h-[30px] w-[30px] rounded-full border-[5px] border-emerald-100 border-t-[5px] border-t-white animate-spin'/>
                           ) : (
