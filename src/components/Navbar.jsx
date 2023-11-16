@@ -34,7 +34,7 @@ const Navbar = ({ currentRoute, loginStatus, setLoginStatus }) => {
   }
 
   return (
-    <div className={`sticky top-0 z-50 h-[80px] w-full bg-white justify-center ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful') ? 'hidden' : 'flex'} shadow-[0px_2px_4px_#cdd4dc] mobile:h-[60px]`}>
+    <div className={`sticky top-0 z-50 h-[80px] w-full bg-white ${(currentRoute === 'thankyou' || currentRoute === 'unsuccessful' || currentRoute === 'pagenotfound') ? 'hidden' : 'flex'} justify-center shadow-[0px_2px_4px_#cdd4dc] mobile:h-[60px]`}>
       {loginStatus.login ? (
         // navbar when logged in
         <div className='relative h-full w-full max-w-[1700px] flex items-center justify-between px-[20px]'>

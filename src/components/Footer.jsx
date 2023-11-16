@@ -4,7 +4,7 @@ import { Fade } from 'react-awesome-reveal'
 
 import logo from '../assets/logo.png'
 
-const Footer = () => {
+const Footer = ({ currentRoute }) => {
   const navigate = useNavigate()
 
   return (
@@ -23,11 +23,11 @@ const Footer = () => {
             <div className='h-fit w-full flex flex-col gap-[10px]'>
               <Fade direction='up' triggerOnce={true}>
                 <p className='text-xl font-semibold text-slate-500'>Explore</p>
-                <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/')}>Home</p>
-                <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/about')}>About</p>
-                <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/contact')}>Contact</p>
-                <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/pricing')}>Pricing</p>
-                <p className='underline-offset-4 duration-200 cursor-pointer hover:underline hover:opacity-50' onClick={() => navigate('/policy')}>Policy</p>
+                <p className={`${(currentRoute === 'home') ? 'underline underline-offset-4' : 'hover:opacity-50'} duration-200 cursor-pointer`} onClick={() => (currentRoute !== 'home') && navigate('/')}>Home</p>
+                <p className={`${(currentRoute === 'about') ? 'underline underline-offset-4' : 'hover:opacity-50'} duration-200 cursor-pointer`} onClick={() => (currentRoute !== 'about') && navigate('/about')}>About</p>
+                <p className={`${(currentRoute === 'contact') ? 'underline underline-offset-4' : 'hover:opacity-50'} duration-200 cursor-pointer`} onClick={() => (currentRoute !== 'contact') && navigate('/contact')}>Contact</p>
+                <p className={`${(currentRoute === 'pricing') ? 'underline underline-offset-4' : 'hover:opacity-50'} duration-200 cursor-pointer`} onClick={() => (currentRoute !== 'pricing') && navigate('/pricing')}>Pricing</p>
+                <p className={`${(currentRoute === 'policy') ? 'underline underline-offset-4' : 'hover:opacity-50'} duration-200 cursor-pointer`} onClick={() => (currentRoute !== 'policy') && navigate('/policy')}>Policy</p>
               </Fade>
             </div>
           </div>

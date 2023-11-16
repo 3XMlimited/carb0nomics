@@ -6,7 +6,7 @@ import { Fade } from 'react-awesome-reveal'
 import { basicPaymentAPI } from '../hooks/functions'
 import Footer from './Footer'
 
-const Pricing = ({ setCurrentRoute, loginStatus }) => {
+const Pricing = ({ currentRoute, setCurrentRoute, loginStatus }) => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
 
@@ -33,8 +33,8 @@ const Pricing = ({ setCurrentRoute, loginStatus }) => {
         <div className='h-fit w-full max-w-[900px] px-[20px] py-[40px] grid items-center justify-center gap-[40px]'>
           <div>
             <Fade direction='up' triggerOnce={true}>
-              <p className='text-3xl font-semibold text-center'>What Gets Measured Gets Accomplished</p>
-              <p className='text-center'>Your Path to Net 0 Start with These Plans</p>
+              <p className='text-4xl font-semibold text-center xxl:text-3xl md:text-2xl sm:text-xl'>What Gets Measured Gets Accomplished</p>
+              <p className='text-center sm:text-sm'>Your Path to Net 0 Start with These Plans</p>
             </Fade>
           </div>
 
@@ -87,7 +87,7 @@ const Pricing = ({ setCurrentRoute, loginStatus }) => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer currentRoute={currentRoute}/>
     </>
   )
 }

@@ -4,7 +4,7 @@ import { Fade } from 'react-awesome-reveal'
 import contact from '../assets/contact.png'
 import Footer from './Footer'
 
-const Contact = ({ setCurrentRoute }) => {
+const Contact = ({ currentRoute, setCurrentRoute }) => {
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
   const [finalBody, setFinalBody] = useState('')
@@ -39,7 +39,7 @@ const Contact = ({ setCurrentRoute }) => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer currentRoute={currentRoute}/>
     </>
   )
 }

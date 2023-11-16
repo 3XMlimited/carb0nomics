@@ -4,7 +4,7 @@ import { useNavigate, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-import { host } from './hooks/host';
+import { host } from './hooks/host'
 import logo from './assets/logo.png'
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -17,10 +17,12 @@ import Pricing from './components/Pricing'
 import Dashboard from './components/Dashboard'
 import ActionPlan from './components/ActionPlan'
 import Search from './components/Search'
+// import Report from './components/Report'
 import Account from './components/Account'
-import Navbar from './components/Navbar';
-import ThankYou from './components/ThankYou';
-import Unsuccessful from './components/Unsuccessful';
+import Navbar from './components/Navbar'
+import ThankYou from './components/ThankYou'
+import Unsuccessful from './components/Unsuccessful'
+import PageNotFound from './components/PageNotFound';
 
 function App() {
   const navigate = useNavigate()
@@ -86,17 +88,19 @@ function App() {
       <div id='global-container' className='h-screen w-full bg-slate-100 text-base font-normal text-slate-800 overflow-y-scroll'>
         <Navbar currentRoute={currentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>
         <Routes>
-          <Route exact path='/' element={<Home setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
-          <Route exact path='/about' element={<About setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
-          <Route exact path='/contact' element={<Contact setCurrentRoute={setCurrentRoute}/>}/>
-          <Route exact path='/policy' element={<Policy setCurrentRoute={setCurrentRoute}/>}/>
-          <Route exact path='/pricing' element={<Pricing setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
+          <Route path='*' element={<PageNotFound setCurrentRoute={setCurrentRoute} />}/>
+          <Route exact path='/' element={<Home currentRoute={currentRoute} setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
+          <Route exact path='/about' element={<About currentRoute={currentRoute} setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
+          <Route exact path='/contact' element={<Contact currentRoute={currentRoute} setCurrentRoute={setCurrentRoute}/>}/>
+          <Route exact path='/policy' element={<Policy currentRoute={currentRoute} setCurrentRoute={setCurrentRoute}/>}/>
+          <Route exact path='/pricing' element={<Pricing currentRoute={currentRoute} setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
           <Route exact path='/login' element={<Login setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
           <Route exact path='/signup' element={<Signup setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
           <Route exact path='/forgotpassword' element={<ForgotPassword setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
           <Route exact path='/dashboard' element={<Dashboard setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
           <Route exact path='/actionplan' element={<ActionPlan setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
           <Route exact path='/search' element={<Search setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/>
+          {/* <Route exact path='/report' element={<Report setCurrentRoute={setCurrentRoute} loginStatus={loginStatus}/>}/> */}
           <Route exact path='/account' element={<Account setCurrentRoute={setCurrentRoute} loginStatus={loginStatus} setLoginStatus={setLoginStatus}/>}/>
           <Route exact path='/thankyou' element={<ThankYou setCurrentRoute={setCurrentRoute} setLoginStatus={setLoginStatus} />}/>
           <Route exact path='/unsuccessful' element={<Unsuccessful setCurrentRoute={setCurrentRoute} />}/>

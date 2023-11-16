@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LuArrowUpDown } from 'react-icons/lu'
 import { BsArrowDown, BsArrowUp } from 'react-icons/bs'
 import ReactEChart from 'echarts-for-react'
-import moment from 'moment'
 
 import { esgDataAPI, esgListDataAPI, esgCompanyNameAPI } from '../hooks/functions'
 
@@ -152,7 +150,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
     <div className='h-fit min-h-[calc(100%-80px)] w-full bg-slate-100 flex justify-center mobile:min-h-[calc(100%-60px)]'>
       <div className='h-fit w-full max-w-[1700px] py-[20px] px-[20px] flex flex-col gap-[20px] md:px-0'>
         <div className='h-fit w-full md:px-[20px]'>
-          <p className='text-lg font-semibold sm:text-base'>Environment, Social and Governance (ESG) Risk Ratings</p>
+          <p className='text-xl font-bold sm:text-base'>Environment, Social and Governance (ESG) Risk Ratings</p>
           <p className='text-slate-600 text-justify sm:text-sm'>Find out how sustainable company businesses are by observing their ESG Risk scores throughout the years.</p>
         </div>
         <div className='h-fit w-full flex flex-col md:px-[20px]'>
@@ -169,30 +167,30 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
           {/* individual with chart */}
           <div className={`${displayList ? 'scale-0 h-0 w-0 opacity-0' : 'scale-100 h-fit w-full opacity-100'} flex flex-col gap-[20px] origin-top-left duration-500`}>
             <div className='h-fit w-full flex flex-col gap-[5px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl md:rounded-none'>
-              <p className='font-medium'>ESG Risk Scores {data[data.length-1]?.timestamp ? '('+data[data.length-1].timestamp.split('/')[1]+' AD)' : ''}</p>
+              <p className='font-bold'>ESG Risk Scores {data[data.length-1]?.timestamp ? '('+data[data.length-1].timestamp.split('/')[1]+' AD)' : ''}</p>
               <div className='h-fit w-full grid grid-cols-4 gap-[10px] text-slate-500 xl:grid-cols-2 md:grid-cols-1'>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Total ESG Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].esg).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl md:bg-slate-200 md:rounded-lg md:flex md:justify-center'>{(data.length > 0) ? Number(data[data.length-1].esg).toFixed(0) : '-'}</p>
                 </div>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Environment Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].environment).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl md:bg-slate-200 md:rounded-lg md:flex md:justify-center'>{(data.length > 0) ? Number(data[data.length-1].environment).toFixed(0) : '-'}</p>
                 </div>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Social Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].social).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl md:bg-slate-200 md:rounded-lg md:flex md:justify-center'>{(data.length > 0) ? Number(data[data.length-1].social).toFixed(0) : '-'}</p>
                 </div>
                 <div className='w-full flex flex-col md:flex-row md:gap-[10px] md:items-center'>
                   <p className='text-sm md:order-2'>Governance Risk Score</p>
-                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl'>{(data.length > 0) ? Number(data[data.length-1].governance).toFixed(0) : '-'}</p>
+                  <p className='text-3xl text-slate-800 font-bold md:order-1 md:w-[40px] md:text-2xl md:bg-slate-200 md:rounded-lg md:flex md:justify-center'>{(data.length > 0) ? Number(data[data.length-1].governance).toFixed(0) : '-'}</p>
                 </div>
               </div>
             </div>
             <div className='h-fit w-full flex flex-col gap-[5px] p-[20px] bg-white shadow-[0px_2px_4px_#cdd4dc] rounded-xl md:rounded-none'>
               <div>
-                <p className='font-medium'>ESG Risk Scores History {company ? <span>of <span className='text-emerald-500'>{company}</span></span> : ''}</p>
-                <p className='text-slate-500'>These scores typically range from 0 to 100. The lower the score the better.</p>
+                <p className='font-bold'>ESG Risk Scores History {company ? <span>of <span className='text-emerald-500'>{company}</span></span> : ''}</p>
+                <p className='text-slate-500'>These risk scores typically range from 0 to 100. The lower the score the better.</p>
               </div>
               <div className='h-[400px] w-full overflow-y-scroll hide-scrollbar'>
                 <ReactEChart option={chartOption} showLoading={loading} style={{height: '100%', width: '100%', minWidth: '420px'}}/>
@@ -205,7 +203,7 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
             {loading ? (
               <div className='h-fit w-full flex flex-col gap-[10px] p-[20px]'>
                 <div className='flex flex-wrap items-center gap-[10px]'>
-                  <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
+                  <p className='font-bold'>Top 21 Companies in Hong Kong</p>
                   <div className='h-[20px] w-[20px] border-4 border-emerald-100 border-y-4 border-y-emerald-400 rounded-full animate-spin'/>
                 </div>
                 <div className='h-fit w-full grid grid-cols-2 gap-[10px] xxl:grid-cols-1'>
@@ -242,13 +240,13 @@ const Search = ({ setCurrentRoute, loginStatus }) => {
               </div>
             ) : (
               <div className='h-fit w-full flex flex-col gap-[10px] p-[20px]'>
-                <p className='font-semibold'>Top 21 Companies in Hong Kong</p>
+                <p className='font-bold'>Top 21 Companies in Hong Kong</p>
                 <div className='h-fit w-full flex items-center flex-wrap gap-[10px]'>
                   <p className='md:text-sm'>Sort By:</p>
-                  <button onClick={() => handleSort('esg')} className={`h-[40px] w-fit px-[5px] ${sortConditions.esg.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>ESG{sortConditions.esg.selected ? ((sortConditions.esg.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
-                  <button onClick={() => handleSort('environment')} className={`h-[40px] w-fit px-[5px] ${sortConditions.environment.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Environment{sortConditions.environment.selected ? ((sortConditions.environment.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
-                  <button onClick={() => handleSort('social')} className={`h-[40px] w-fit px-[5px] ${sortConditions.social.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Social{sortConditions.social.selected ? ((sortConditions.social.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
-                  <button onClick={() => handleSort('governance')} className={`h-[40px] w-fit px-[5px] ${sortConditions.governance.selected ? 'bg-slate-300' : 'bg-slate-100'} border border-slate-300 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Governance{sortConditions.governance.selected ? ((sortConditions.governance.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('esg')} className={`h-[40px] w-fit px-[5px] ${sortConditions.esg.selected ? 'bg-slate-200' : 'bg-slate-50'} border border-slate-200 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>ESG{sortConditions.esg.selected ? ((sortConditions.esg.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('environment')} className={`h-[40px] w-fit px-[5px] ${sortConditions.environment.selected ? 'bg-slate-200' : 'bg-slate-50'} border border-slate-200 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Environment{sortConditions.environment.selected ? ((sortConditions.environment.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('social')} className={`h-[40px] w-fit px-[5px] ${sortConditions.social.selected ? 'bg-slate-200' : 'bg-slate-50'} border border-slate-200 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Social{sortConditions.social.selected ? ((sortConditions.social.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
+                  <button onClick={() => handleSort('governance')} className={`h-[40px] w-fit px-[5px] ${sortConditions.governance.selected ? 'bg-slate-200' : 'bg-slate-50'} border border-slate-200 rounded-md flex items-center justify-center gap-[5px] cursor-pointer duration-200 hover:opacity-50 md:text-sm md:h-[30px]`}>Governance{sortConditions.governance.selected ? ((sortConditions.governance.sort === 'asc') ? <BsArrowUp size={16}/> : <BsArrowDown size={16}/>) : ''}</button>
                 </div>
                 <div className='h-fit w-full grid grid-cols-2 gap-[10px] xxl:grid-cols-1'>
                   {listData.map((e, i) => (

@@ -3,7 +3,7 @@ import { Fade } from 'react-awesome-reveal'
 
 import Footer from './Footer'
 
-const Policy = ({ setCurrentRoute }) => {
+const Policy = ({ currentRoute, setCurrentRoute }) => {
 
   useEffect(() => {
     setCurrentRoute('policy')
@@ -209,7 +209,7 @@ const Policy = ({ setCurrentRoute }) => {
             </Fade>
         </div>
         
-        <Footer/>
+        <Footer currentRoute={currentRoute}/>
     </>
   )
 }

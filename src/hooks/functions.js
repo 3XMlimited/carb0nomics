@@ -245,11 +245,11 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetai
     .then((response) => {
         const obj = response.data;
         if (obj?.result?.emissions) {
-            setFormDetails({ date: moment().format('YYYY-MM'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setFormDetails({ date: moment(), sector: '', active_id: '', category: '', amount: '', unit: '', type: ''  })
             setDisplayForm(false)
             setRefresh(p => !p)
         } else {
-            setError('Error! Please try again')
+            setError({ global: "Error! Please try again.", sector: false, category: false, amount: false, unit: false, date: false })
         }
     })
     .catch((err) => {
@@ -261,7 +261,7 @@ export const addDataAPI = ({ formDetails, setFormLoading, setError, setFormDetai
 };
 
 // Delete emission data
-export const deleteDataAPI = ({ setFormLoading, setRefresh, id, navigate }) => {
+export const deleteDataAPI = ({ setFormLoading, setRefresh, id, navigate, setDeleteDialogue }) => {
     setFormLoading(true)
     const url = `${host}/api/v1/data`;
     const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
@@ -290,6 +290,7 @@ export const deleteDataAPI = ({ setFormLoading, setRefresh, id, navigate }) => {
     })
     .finally(() => {
         setFormLoading(false)
+        setDeleteDialogue({ display: false, data: {} })
     })
 };
 
@@ -341,11 +342,11 @@ const addDataAPIForEdit = ({ formDetails, setFormLoading, setError, setFormDetai
     .then((response) => {
         const obj = response.data;
         if (obj?.result?.emissions) {
-            setFormDetails({ date: moment().format('YYYY-MM'), sector: '', active_id: '', category: '', amount: 0, unit: '', type: ''  })
+            setFormDetails({ date: moment(), sector: '', active_id: '', category: '', amount: '', unit: '', type: '' })
             setDisplayFormEdit(false)
             setRefresh(p => !p)
         } else {
-            setError('Error! Please try again')
+            setError({ global: 'Error! Please try again.', sector: false, category: false, amount: false, unit: false, date: false })
         }
     })
     .catch((err) => {
@@ -390,6 +391,36 @@ export const actionPlanAPI = ({ category, percent, value, setRefresh, setReducti
     })
     .catch((err) => console.log(err))
     .finally(() => setReductionLoading(false))
+};
+
+export const actionPlanIndividualAPI = ({ category, percent, value, setRefresh, setRedLoading, navigate }) => {
+    setRedLoading(true)
+    const url = `${host}/api/v1/data/target`;
+    const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null
+
+    if (!user) {
+        navigate('/login')
+    }
+
+    axios.post(url, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Authorization": "Bearer "+user?.token,
+        },
+        data: {
+            category: category,
+            percent: percent,
+            value: value
+        },
+        user_id: user?._id,
+    })
+    .then((response) => {
+        setRefresh(p => !p)
+    })
+    .catch((err) => console.log(err))
+    .finally(() => setRedLoading(false))
 };
 
 

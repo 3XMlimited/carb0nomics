@@ -38,6 +38,7 @@ const useFetchData = ({ refresh }) => {
             })
             .then((response) => {
                 const obj = response.data
+
                 if (obj) {
                     let temp = Object.entries(obj?.by_type)?.filter(f => f[1] > 0)
                     setData(obj)

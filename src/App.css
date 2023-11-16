@@ -22,8 +22,12 @@
 
 .fancy-scrollbar::-webkit-scrollbar-thumb {
   width: 10px;
-  background: #AAA;
+  background: #DDD;
   border-radius: 10px;
+}
+
+.fancy-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #AAA;
 }
 
 input::-webkit-outer-spin-button,
